@@ -26,11 +26,11 @@ import { toast } from "sonner";
 import api from "@/lib/api";
 import Cookie from "js-cookie";
 
-// Single demo credential for unified student dashboard
+// Demo credentials matching seed data
 const demoCredential = {
-    email: "student@Agaran.com",
-    password: "Agaran123",
-    name: "Agaran Student"
+    email: "student1@durkkas.com",
+    password: "Durk@123",
+    name: "Aarav Sharma"
 };
 
 export default function StudentLoginPage() {
@@ -51,31 +51,6 @@ export default function StudentLoginPage() {
         setIsLoading(true);
 
         try {
-            // For Demo purposes, if it matches our demo credential
-            if (formData.email.toLowerCase() === demoCredential.email.toLowerCase() &&
-                formData.password === demoCredential.password) {
-                // Simulate successful login
-                const mockUser = {
-                    id: "demo-student-id",
-                    email: demoCredential.email,
-                    display_name: demoCredential.name,
-                    role: { name: "STUDENT", level: 0 },
-                    company_id: "Agaran-foundation",
-                };
-
-                setUser(mockUser as any);
-                Cookie.set("user_display_name", demoCredential.name);
-                Cookie.set("user_role", "STUDENT");
-
-                toast.success("Welcome back!", {
-                    description: `Signed in as ${demoCredential.name}`
-                });
-
-                router.push("/ems/student/dashboard");
-                return;
-            }
-
-            // Actual API Login
             const response = await api.post('/auth/login', {
                 email: formData.email,
                 password: formData.password
@@ -88,7 +63,6 @@ export default function StudentLoginPage() {
             const displayName = `${user.firstName} ${user.lastName}` || user.display_name || "Student";
             const cookieOptions = { expires: 1, path: '/', sameSite: 'Lax' as const };
 
-            // Set user in store
             setUser({
                 id: user.id.toString(),
                 email: user.email,
@@ -100,7 +74,6 @@ export default function StudentLoginPage() {
                 company_id: primaryRole.company_id?.toString()
             });
 
-            // Set Essential Cookies
             Cookie.set("access_token", tokens.accessToken, cookieOptions);
             Cookie.set("user_display_name", displayName, cookieOptions);
             Cookie.set("user_role", primaryRole.name, cookieOptions);
@@ -203,7 +176,7 @@ export default function StudentLoginPage() {
                                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-primary transition-colors" />
                                     <Input
                                         type="email"
-                                        placeholder="student@Agaran.com"
+                                        placeholder="student1@durkkas.com"
                                         value={formData.email}
                                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                         className="pl-10 h-12 bg-white/50 border-gray-200 focus:bg-white transition-all rounded-xl"

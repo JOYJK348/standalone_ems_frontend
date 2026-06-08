@@ -8,11 +8,11 @@ export default function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
     const dashboardPath = getDashboardPath(userRole);
 
-    if (!token && pathname !== "/login") {
+    if (!token && pathname !== "/login" && pathname !== "/ems/student/login") {
         return NextResponse.redirect(new URL("/login", request.url));
     }
 
-    if (token && pathname === "/login") {
+    if (token && (pathname === "/login" || pathname === "/ems/student/login")) {
         return NextResponse.redirect(new URL(dashboardPath, request.url));
     }
 
