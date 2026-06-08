@@ -11,7 +11,6 @@ import {
     Building2, Calculator, Loader2, Info, Search, MapPin, Package,
     Plus, Trash2, Table2, FileSpreadsheet
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import api from '@/lib/api';
 import { usePracticeScenario } from '@/hooks/usePracticeScenario';
@@ -84,7 +83,7 @@ function calcTaxRow(taxable: number, rate: number, isInterState: boolean) {
 }
 
 export function GSTPracticePortal({ allocationId, onSuccess }: GSTPracticePortalProps) {
-    const [seenIds, setSeenIds] = useState<number[]>(() => getSeenIds());
+    const [seenIds] = useState<number[]>(() => getSeenIds());
     const { scenario, loading: scenarioLoading, currentHintIndex, showNextHint, error: scenarioError } = usePracticeScenario('GST', seenIds);
     const [currentStep, setCurrentStep] = useState(1);
     const [submitting, setSubmitting] = useState(false);
@@ -113,7 +112,7 @@ export function GSTPracticePortal({ allocationId, onSuccess }: GSTPracticePortal
     }, []);
 
     useEffect(() => {
-        if (scenario) { addSeenId(scenario.id); setSeenIds(getSeenIds()); }
+        if (scenario) { addSeenId(scenario.id); }
     }, [scenario]);
 
     useEffect(() => {
@@ -434,7 +433,7 @@ export function GSTPracticePortal({ allocationId, onSuccess }: GSTPracticePortal
                         <Badge className="bg-white/20 text-white border-white/30">{Math.round(progress)}% Complete</Badge>
                     </div>
                     <div className="w-full bg-white/20 rounded-full h-2">
-                        <motion.div className="bg-white h-2 rounded-full" initial={{ width: 0 }} animate={{ width: `${progress}%` }} transition={{ duration: 0.3 }} />
+                        <div className="bg-white h-2 rounded-full" />
                     </div>
                     <div className="flex justify-between mt-3">
                         {STEPS.map((step) => {
@@ -454,8 +453,7 @@ export function GSTPracticePortal({ allocationId, onSuccess }: GSTPracticePortal
                 </CardContent>
             </Card>
 
-            <AnimatePresence mode="wait">
-                <motion.div key={currentStep} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+                <div key={currentStep}>
                     <Card className="border-0 shadow-xl">
                         <CardHeader className="bg-gray-50 border-b">
                             <CardTitle className="flex items-center gap-3 text-lg">
@@ -675,8 +673,7 @@ export function GSTPracticePortal({ allocationId, onSuccess }: GSTPracticePortal
                             )}
                         </CardContent>
                     </Card>
-                </motion.div>
-            </AnimatePresence>
+                </div>
 
             <div className="flex items-center justify-between gap-4">
                 <Button variant="outline" onClick={() => setCurrentStep(prev => Math.max(prev - 1, 1))} disabled={currentStep === 1} className="px-8">

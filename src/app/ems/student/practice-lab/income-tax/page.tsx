@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
+
 import { ArrowLeft, IndianRupee, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -46,9 +46,9 @@ export default function IncomeTaxLabPage() {
     if (loading) {
         return (
             <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center">
-                <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }}>
+                <div>
                     <IndianRupee className="h-12 w-12 text-blue-500" />
-                </motion.div>
+                </div>
             </div>
         );
     }
@@ -59,11 +59,7 @@ export default function IncomeTaxLabPage() {
 
             <div className="container mx-auto px-4 py-8 pb-24 max-w-6xl">
                 {/* Header */}
-                <motion.div
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="mb-8"
-                >
+                <div className="mb-8">
                     <Button
                         variant="ghost"
                         onClick={() => router.push('/ems/student/practice-lab')}
@@ -108,21 +104,17 @@ export default function IncomeTaxLabPage() {
                             </div>
                         </CardContent>
                     </Card>
-                </motion.div>
+                </div>
 
                 {/* Portal */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 }}
-                >
+                <div>
                     {allocation && (
                         <IncomeTaxPortal
                             allocationId={allocation.id}
                             onSuccess={handleSuccess}
                         />
                     )}
-                </motion.div>
+                </div>
             </div>
 
             <BottomNav />

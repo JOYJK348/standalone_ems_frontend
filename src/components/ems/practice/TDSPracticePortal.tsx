@@ -11,7 +11,6 @@ import {
     Building2, Calculator, Loader2, Info, Shield, Landmark,
     Plus, Trash2, Users
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import api from '@/lib/api';
 import { usePracticeScenario } from '@/hooks/usePracticeScenario';
@@ -77,7 +76,7 @@ function clearDraft() {
 }
 
 export function TDSPracticePortal({ allocationId, onSuccess }: TDSPracticePortalProps) {
-    const [seenIds, setSeenIds] = useState<number[]>(() => getSeenIds());
+    const [seenIds] = useState<number[]>(() => getSeenIds());
     const { scenario, loading: scenarioLoading, currentHintIndex, showNextHint, error: scenarioError } = usePracticeScenario('TDS', seenIds);
     const [currentStep, setCurrentStep] = useState(1);
     const [submitting, setSubmitting] = useState(false);
@@ -107,7 +106,7 @@ export function TDSPracticePortal({ allocationId, onSuccess }: TDSPracticePortal
     }, []);
 
     useEffect(() => {
-        if (scenario) { addSeenId(scenario.id); setSeenIds(getSeenIds()); }
+        if (scenario) { addSeenId(scenario.id); }
     }, [scenario]);
 
     useEffect(() => {
@@ -313,7 +312,7 @@ export function TDSPracticePortal({ allocationId, onSuccess }: TDSPracticePortal
                         <Badge className="bg-white/20 text-white">{Math.round(progress)}%</Badge>
                     </div>
                     <div className="w-full bg-white/20 rounded-full h-2 mt-2">
-                        <motion.div className="bg-white h-2 rounded-full" initial={{ width: 0 }} animate={{ width: `${progress}%` }} />
+                        <div className="bg-white h-2 rounded-full" />
                     </div>
                     <div className="flex justify-between mt-3">
                         {STEPS.map((s, i) => (
@@ -327,8 +326,7 @@ export function TDSPracticePortal({ allocationId, onSuccess }: TDSPracticePortal
                 </CardContent>
             </Card>
 
-            <AnimatePresence mode="wait">
-                <motion.div key={currentStep} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+                <div key={currentStep}>
                     <Card className="border-0 shadow-xl">
                         <CardHeader className="bg-gray-50 border-b">
                             <CardTitle className="flex items-center gap-3 text-lg">
@@ -547,8 +545,7 @@ export function TDSPracticePortal({ allocationId, onSuccess }: TDSPracticePortal
                             )}
                         </CardContent>
                     </Card>
-                </motion.div>
-            </AnimatePresence>
+                </div>
 
             <div className="flex justify-between gap-4">
                 <Button variant="outline" onClick={() => setCurrentStep(prev => Math.max(prev - 1, 1))} disabled={currentStep === 1} className="px-8">

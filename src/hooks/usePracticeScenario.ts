@@ -22,13 +22,10 @@ export function usePracticeScenario(
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [currentHintIndex, setCurrentHintIndex] = useState(-1);
-    const abortRef = useRef<AbortController | null>(null);
+    const fetchId = useRef(0);
 
     const fetchScenario = useCallback(async () => {
-        abortRef.current?.abort();
-        const controller = new AbortController();
-        abortRef.current = controller;
-
+        const id = ++fetchId.current;
         setLoading(true);
         setError(null);
         try {
@@ -36,7 +33,8 @@ export function usePracticeScenario(
             if (excludeIds.length > 0) {
                 params.set('excludeIds', excludeIds.join(','));
             }
-            const res = await api.get(`/ems/practice/scenarios?${params}`, { signal: controller.signal });
+            const res = await api.get(`/ems/practice/scenarios?${params}`);
+            if (id !== fetchId.current) return;
             const data = res.data?.data;
             if (data) {
                 setScenario(data);
@@ -45,20 +43,18 @@ export function usePracticeScenario(
                 setError('No scenarios available for this module.');
             }
         } catch (err: any) {
-            if (err?.name === 'CanceledError' || err?.code === 'ERR_CANCELED') return;
+            if (id !== fetchId.current) return;
             const msg = err.response?.data?.message || err.message || 'Failed to load scenario';
-            console.error('[PracticeScenario] Fetch error:', msg, err);
             setError(msg);
         } finally {
-            if (!controller.signal.aborted) {
+            if (id === fetchId.current) {
                 setLoading(false);
             }
         }
-    }, [moduleType, JSON.stringify(excludeIds)]);
+    }, [moduleType, excludeIds.length > 0 ? excludeIds.join(',') : '']);
 
     useEffect(() => {
         fetchScenario();
-        return () => { abortRef.current?.abort(); };
     }, [fetchScenario]);
 
     const showNextHint = useCallback(() => {

@@ -112,9 +112,23 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
+const retryCount = new WeakMap<object, number>();
+
 api.interceptors.response.use(
     (response) => response,
     (error) => {
+        // Retry on network errors (ERR_NETWORK_CHANGED, timeout, etc.) up to 2 times
+        if (!error.response && error.config && !error.config._isRetry) {
+            const config = error.config;
+            config._isRetry = true;
+            const count = retryCount.get(config) || 0;
+            if (count < 2) {
+                retryCount.set(config, count + 1);
+                return new Promise(resolve => setTimeout(resolve, 500 * (count + 1)))
+                    .then(() => api.request(config));
+            }
+        }
+
         if (error.response?.status === 401 && error.response?.data?.error?.code === 'SESSION_EXPIRED') {
             Cookies.remove('access_token', { path: '/' });
             Cookies.remove('refresh_token', { path: '/' });

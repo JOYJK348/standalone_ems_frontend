@@ -2,7 +2,6 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
 import {
     Zap,
     ArrowRight,
@@ -101,12 +100,9 @@ function PracticeLabContent() {
             <div className="min-h-screen bg-gradient-to-br from-orange-50 via-purple-50 to-blue-50">
                 <TopNavbar />
                 <div className="flex items-center justify-center h-[80vh]">
-                    <motion.div
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                    >
+                    <div>
                         <Zap className="h-12 w-12 text-orange-500" />
-                    </motion.div>
+                    </div>
                 </div>
                 <BottomNav />
             </div>
@@ -119,11 +115,7 @@ function PracticeLabContent() {
 
             <div className="container mx-auto px-4 py-8 pb-24 max-w-7xl">
                 {/* Hero Section */}
-                <motion.div
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="mb-12"
-                >
+                <div className="mb-12">
                     <div className="text-center mb-8">
                         <div className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-purple-600 text-white px-6 py-2 rounded-full mb-4">
                             <Sparkles className="h-4 w-4" />
@@ -177,7 +169,7 @@ function PracticeLabContent() {
                             </CardContent>
                         </Card>
                     </div>
-                </motion.div>
+                </div>
 
                 {/* Practice Modules */}
                 <div className="space-y-8">
@@ -197,11 +189,8 @@ function PracticeLabContent() {
                             const progressPercent = totalLimit > 0 ? (usedCount / totalLimit) * 100 : 0;
 
                             return (
-                                <motion.div
+                                <div
                                     key={key}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    whileHover={{ y: -8, transition: { duration: 0.2 } }}
                                     className="group"
                                 >
                                     <Card className={`border-0 shadow-xl overflow-hidden h-full ${!isAvailable ? 'opacity-60' : ''}`}>
@@ -249,9 +238,7 @@ function PracticeLabContent() {
                                                         <span>{usedCount} / {totalLimit} attempts</span>
                                                     </div>
                                                     <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                                                        <motion.div
-                                                            initial={{ width: 0 }}
-                                                            animate={{ width: `${progressPercent}%` }}
+                                                        <div
                                                             className={`h-full bg-gradient-to-r ${config.gradient}`}
                                                         />
                                                     </div>
@@ -283,19 +270,14 @@ function PracticeLabContent() {
                                             </Button>
                                         </CardContent>
                                     </Card>
-                                </motion.div>
+                                </div>
                             );
                         })}
                     </div>
                 </div>
 
                 {/* Scenario Library */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 }}
-                    className="mt-12"
-                >
+                <div className="mt-12">
                     <h2 className="text-2xl font-black text-gray-900 flex items-center gap-3 mb-6">
                         <div className="h-1 w-12 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full"></div>
                         <BookOpen className="h-6 w-6 text-purple-600" />
@@ -303,7 +285,7 @@ function PracticeLabContent() {
                         <Badge variant="outline" className="text-xs font-normal">Browse all practice scenarios</Badge>
                     </h2>
                     <ScenarioLibrary />
-                </motion.div>
+                </div>
             </div>
 
             <BottomNav />

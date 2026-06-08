@@ -7,7 +7,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { motion } from 'framer-motion';
 import api from '@/lib/api';
 import type { PracticeScenario } from '@/lib/practiceTypes';
 import { MODULE_NAMES, DIFFICULTY_LABELS, DIFFICULTY_COLORS } from '@/lib/practiceTypes';
@@ -117,11 +116,8 @@ export function ScenarioLibrary() {
                             const Icon = MODULE_ICONS[s.module_type] || FileText;
                             const color = MODULE_COLORS[s.module_type] || 'gray';
                             return (
-                                <motion.tr
+                                <tr
                                     key={s.id}
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    transition={{ delay: idx * 0.03 }}
                                     className="hover:bg-gray-50"
                                 >
                                     <td className="p-3 text-gray-400 text-xs">{idx + 1}</td>
@@ -150,7 +146,7 @@ export function ScenarioLibrary() {
                                             Practice <ArrowRight className="h-3 w-3 ml-1" />
                                         </Button>
                                     </td>
-                                </motion.tr>
+                                </tr>
                             );
                         })}
                     </tbody>
