@@ -75,7 +75,7 @@ export default function WorkspaceProfile() {
                                 <div className="space-y-1.5">
                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Email Authority</label>
                                     <div className="p-4 bg-slate-50 rounded-2xl text-sm font-bold text-slate-400 border border-transparent flex items-center gap-2">
-                                        <Mail className="w-4 h-4" /> {user?.email || "admin@durkkas.com"}
+                                        <Mail className="w-4 h-4" /> {user?.email || "admin@Agaran.com"}
                                     </div>
                                 </div>
                             </div>

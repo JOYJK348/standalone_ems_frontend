@@ -28,7 +28,7 @@ export default function ProfilePage() {
     const [isEditing, setIsEditing] = useState(false);
     const [profile, setProfile] = useState({
         name: "Student Name",
-        email: "student@durkkas.com",
+        email: "student@Agaran.com",
         phone: "+91 98765 43210",
         address: "Chennai, Tamil Nadu, India",
         enrollmentDate: "Jan 15, 2024",

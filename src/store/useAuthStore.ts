@@ -32,7 +32,7 @@ export const useAuthStore = create<AuthState>()(
             logout: () => set({ user: null, isAuthenticated: false }),
         }),
         {
-            name: "durkkas-auth-storage",
+            name: "Agaran-auth-storage",
         }
     )
 );

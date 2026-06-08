@@ -40,14 +40,14 @@ export default function PlatformBranding() {
     const [companies, setCompanies] = useState<any[]>([]);
     const [selectedCompany, setSelectedCompany] = useState<string>("");
     const [branding, setBranding] = useState<BrandingData>({
-        platform_name: "Durkkas ERP",
+        platform_name: "Agaran ERP",
         tagline: "Advanced Enterprise Architecture",
         logo_url: null,
         favicon_url: null,
         primary_color: "#0066FF",
         secondary_color: "#0052CC",
-        copyright_text: "© 2026 Durkkas Academy. All Rights Reserved.",
-        support_url: "https://support.durkkas.com"
+        copyright_text: "© 2026 Agaran Academy. All Rights Reserved.",
+        support_url: "https://support.Agaran.com"
     });
 
     const [companyBranding, setCompanyBranding] = useState<any>({

@@ -28,9 +28,9 @@ import Cookie from "js-cookie";
 
 // Single demo credential for unified student dashboard
 const demoCredential = {
-    email: "student@durkkas.com",
-    password: "durkkas123",
-    name: "Durkkas Student"
+    email: "student@Agaran.com",
+    password: "Agaran123",
+    name: "Agaran Student"
 };
 
 export default function StudentLoginPage() {
@@ -60,7 +60,7 @@ export default function StudentLoginPage() {
                     email: demoCredential.email,
                     display_name: demoCredential.name,
                     role: { name: "STUDENT", level: 0 },
-                    company_id: "durkkas-foundation",
+                    company_id: "Agaran-foundation",
                 };
 
                 setUser(mockUser as any);
@@ -163,7 +163,7 @@ export default function StudentLoginPage() {
                             <Server className="text-white w-6 h-6" />
                         </div>
                         <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-                            DURKKAS EMS
+                            Agaran EMS
                         </h1>
                     </div>
                     <p className="text-muted-foreground font-medium tracking-wide uppercase text-xs">
@@ -203,7 +203,7 @@ export default function StudentLoginPage() {
                                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-primary transition-colors" />
                                     <Input
                                         type="email"
-                                        placeholder="student@durkkas.com"
+                                        placeholder="student@Agaran.com"
                                         value={formData.email}
                                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                         className="pl-10 h-12 bg-white/50 border-gray-200 focus:bg-white transition-all rounded-xl"

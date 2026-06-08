@@ -548,7 +548,7 @@ export default function PlatformSystemSettings() {
                         <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                         <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Environment Secured • Heartbeat Active</span>
                     </div>
-                    <p className="text-[9px] font-medium text-slate-300 uppercase tracking-tight">Configuration Synchronized with Durkkas Cloud Cluster-A</p>
+                    <p className="text-[9px] font-medium text-slate-300 uppercase tracking-tight">Configuration Synchronized with Agaran Cloud Cluster-A</p>
                 </div>
             </div>
 

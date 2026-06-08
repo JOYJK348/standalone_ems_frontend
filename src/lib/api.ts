@@ -95,16 +95,16 @@ api.interceptors.request.use((config) => {
     }
 
     if (cachedClientIp) {
-        config.headers['x-durkkas-client-ip'] = cachedClientIp;
+        config.headers['x-Agaran-client-ip'] = cachedClientIp;
     } else if (!ipDetectionPromise) {
         ipDetectionPromise = detectClientIp();
     }
 
     if (typeof window !== 'undefined') {
-        let fingerprint = localStorage.getItem('durkkas_fingerprint');
+        let fingerprint = localStorage.getItem('Agaran_fingerprint');
         if (!fingerprint) {
             fingerprint = `dk_${Math.random().toString(36).substring(2, 15)}_${Date.now().toString(36)}`;
-            localStorage.setItem('durkkas_fingerprint', fingerprint);
+            localStorage.setItem('Agaran_fingerprint', fingerprint);
         }
         config.headers['x-device-fingerprint'] = fingerprint;
     }

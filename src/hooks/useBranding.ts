@@ -24,9 +24,9 @@ export function useBranding(companyId?: string | number) {
         return {
             logo_url: '',
             favicon_url: '/favicon.ico',
-            primary_color: '#0066FF', // Standard Durkkas Blue as fallback
+            primary_color: '#0066FF', // Standard Agaran Blue as fallback
             secondary_color: '#0052CC',
-            name: 'Durkkas',
+            name: 'Agaran',
             tagline: 'Advanced Enterprise Architecture'
         };
     };
@@ -76,7 +76,7 @@ export function useBranding(companyId?: string | number) {
                         favicon_url: platformBranding.favicon_url,
                         primary_color: platformBranding.primary_color,
                         secondary_color: platformBranding.secondary_color,
-                        name: platformBranding.platform_name || 'Durkkas',
+                        name: platformBranding.platform_name || 'Agaran',
                         tagline: platformBranding.tagline
                     };
                 }

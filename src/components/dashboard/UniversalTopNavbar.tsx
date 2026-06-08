@@ -131,7 +131,7 @@ export function UniversalTopNavbar({ config }: { config: NavbarConfig }) {
                                         {/* User Info */}
                                         <div className="px-4 py-3 border-b border-gray-200">
                                             <p className="text-sm font-semibold text-gray-900">{config.userName || "User"}</p>
-                                            <p className="text-xs text-gray-500 truncate">{config.userEmail || "user@durkkas.com"}</p>
+                                            <p className="text-xs text-gray-500 truncate">{config.userEmail || "user@Agaran.com"}</p>
                                         </div>
 
                                         {/* Quick Actions */}

@@ -15,7 +15,7 @@ export default function SettingsPage() {
     const [profileData, setProfileData] = useState({
         first_name: "Academic",
         last_name: "Manager",
-        email: "academic@durkkas.com",
+        email: "academic@Agaran.com",
         phone: "+91 98765 43210",
     });
 

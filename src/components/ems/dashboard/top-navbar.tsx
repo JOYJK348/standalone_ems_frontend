@@ -77,7 +77,7 @@ export function TopNavbar() {
                         </div>
                         <div className="hidden sm:block">
                             <span className="text-lg font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
-                                DURKKAS EMS
+                                Agaran EMS
                             </span>
                         </div>
                     </Link>

@@ -7,7 +7,7 @@
 📧 Email: ems.admin@dipl.edu
 🔑 Password: admin@123
 👤 Role: Academic Manager (EMS)
-🏢 Company: DIPL (Durkkas Institute of Professional Learning)
+🏢 Company: DIPL (Agaran Institute of Professional Learning)
 ```
 
 ---
@@ -16,15 +16,15 @@
 
 ### **Platform Admin (Level 5)**
 ```
-📧 Email: admin@durkkas.com
-🔑 Password: durkkas@2026
+📧 Email: admin@Agaran.com
+🔑 Password: Agaran@2026
 👤 Role: Platform Admin
 🎯 Access: Full system access
 ```
 
 ### **Company Admin (Level 4)**
 ```
-📧 Email: admin@durkkas.in
+📧 Email: admin@Agaran.in
 🔑 Password: Admin@123
 👤 Role: Company Admin
 🏢 Company: DIPL
@@ -147,7 +147,7 @@ curl http://localhost:3001
 **Solution:** Run the EMS seed script
 ```bash
 cd backend
-psql -U postgres -d durkkas_erp -f database/seed_ems_admin_user.sql
+psql -U postgres -d Agaran_erp -f database/seed_ems_admin_user.sql
 ```
 
 ### **Issue: Wrong redirect after login**
@@ -226,11 +226,11 @@ Login → Dashboard → Click "Students" → Students Page
 
 ```bash
 # 1. Ensure backend is running
-cd D:\ERP\Clown\foundation_durkkas\backend
+cd D:\ERP\Clown\foundation_Agaran\backend
 npm run dev
 
 # 2. Ensure frontend is running
-cd D:\ERP\Clown\foundation_durkkas\frontend
+cd D:\ERP\Clown\foundation_Agaran\frontend
 npm run dev
 
 # 3. Open browser

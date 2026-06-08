@@ -127,7 +127,7 @@ export default function AuditLogsPage() {
                                                     </div>
                                                     <div className="flex flex-col">
                                                         <span className="text-sm font-black text-slate-900 uppercase tracking-tight">{log.user?.first_name || 'System Entity'}</span>
-                                                        <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{log.user_email || 'internal@durkkas.com'}</span>
+                                                        <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{log.user_email || 'internal@Agaran.com'}</span>
                                                     </div>
                                                 </div>
                                             </td>

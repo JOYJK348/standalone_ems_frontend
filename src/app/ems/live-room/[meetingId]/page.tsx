@@ -138,7 +138,7 @@ export default function LiveRoomPage() {
                         <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                             <Video className="w-5 h-5 text-white" />
                         </div>
-                        <span className="font-bold tracking-tight text-white/90">Durkkas Live</span>
+                        <span className="font-bold tracking-tight text-white/90">Agaran Live</span>
                     </div>
                     <div className="h-4 w-px bg-white/10" />
                     <span className="text-sm font-medium text-white/60 truncate max-w-[200px]">

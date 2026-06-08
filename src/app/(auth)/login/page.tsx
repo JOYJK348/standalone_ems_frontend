@@ -142,7 +142,7 @@ export default function LoginPage() {
                     <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mb-4 shadow-xl shadow-primary/20 transition-transform hover:scale-105 duration-300">
                         <GraduationCap className="text-white w-8 h-8" />
                     </div>
-                    <h1 className="text-3xl font-bold text-primary tracking-tight">Durkkas EMS</h1>
+                    <h1 className="text-3xl font-bold text-primary tracking-tight">Agaran EMS</h1>
                     <p className="text-muted-foreground mt-1 text-sm font-medium uppercase tracking-widest">Education Management System</p>
                 </div>
 
@@ -222,7 +222,7 @@ export default function LoginPage() {
                 </div>
 
                 <p className="text-center mt-8 text-xs text-muted-foreground">
-                    &copy; 2026 Durkkas Innovations. All rights reserved.
+                    &copy; 2026 Agaran Innovations. All rights reserved.
                 </p>
             </div>
         </div>

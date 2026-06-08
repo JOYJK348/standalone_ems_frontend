@@ -126,7 +126,7 @@ GET/POST  /api/ems/tutors
 
 ### **1. Login:**
 ```
-Email: academic@durkkas.com
+Email: academic@Agaran.com
 Password: academic123
 ```
 

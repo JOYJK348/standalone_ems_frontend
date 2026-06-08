@@ -40,7 +40,7 @@ class BrandingService {
                 platform_logo_url: this.getSettingValue(settings, 'platform_logo_url', '/logo.svg'),
                 platform_favicon_url: this.getSettingValue(settings, 'platform_favicon_url', '/favicon.ico'),
                 platform_tagline: this.getSettingValue(settings, 'platform_tagline', 'Advanced Enterprise Architecture'),
-                system_name: this.getSettingValue(settings, 'system_name', 'Durkkas EMS')
+                system_name: this.getSettingValue(settings, 'system_name', 'Agaran EMS')
             };
 
             // Update cache
@@ -59,7 +59,7 @@ class BrandingService {
                 platform_logo_url: '/logo.svg',
                 platform_favicon_url: '/favicon.ico',
                 platform_tagline: 'Advanced Enterprise Architecture',
-                system_name: 'Durkkas EMS'
+                system_name: 'Agaran EMS'
             };
         }
     }

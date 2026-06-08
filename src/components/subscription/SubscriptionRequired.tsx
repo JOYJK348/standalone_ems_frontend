@@ -96,7 +96,7 @@ export default function SubscriptionRequired({
                 {/* Bottom Decoration */}
                 <div className="mt-8 text-center">
                     <p className="text-xs text-slate-400 font-medium">
-                        Powered by <span className="font-bold text-slate-600">Durkkas Innovations</span>
+                        Powered by <span className="font-bold text-slate-600">Agaran Innovations</span>
                     </p>
                 </div>
             </div>

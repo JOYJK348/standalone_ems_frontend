@@ -10,7 +10,7 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "Durkkas EMS | Academy Management System",
+  title: "Agaran EMS | Academy Management System",
   description: "Multi-tenant education management system for academies and training institutes.",
 };
 
