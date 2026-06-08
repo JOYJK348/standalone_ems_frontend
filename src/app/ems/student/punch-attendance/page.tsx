@@ -24,7 +24,7 @@ import api from "@/lib/api";
 
 let faceapi: any = null;
 async function getFaceapi() {
-    if (!faceapi) faceapi = await import('face-api.js');
+    if (!faceapi) faceapi = await import('@vladmandic/face-api');
     return faceapi;
 }
 

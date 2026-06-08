@@ -33,6 +33,8 @@ interface Course {
   id: number
   title: string
   code: string
+  course_name?: string
+  course_code?: string
 }
 
 export default function EnrollmentsPage() {
