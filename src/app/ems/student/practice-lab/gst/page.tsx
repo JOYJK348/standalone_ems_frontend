@@ -30,19 +30,17 @@ export default function GSTLabPage() {
                     setAllocation(gstAllocation);
                 } else {
                     toast.error('GST Lab not available');
-                    router.push('/ems/student/practice-lab');
                 }
             }
         } catch (error) {
-            toast.error('Failed to load GST Lab');
-            router.push('/ems/student/practice-lab');
+            toast.error('Failed to load allocation');
         } finally {
             setLoading(false);
         }
     };
 
     const handleSuccess = () => {
-        fetchAllocation();
+        setLoading(false);
     };
 
     if (loading) {

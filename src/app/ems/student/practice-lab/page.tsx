@@ -13,7 +13,8 @@ import {
     Award,
     Clock,
     Target,
-    Sparkles
+    Sparkles,
+    BookOpen
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -21,6 +22,7 @@ import { Badge } from "@/components/ui/badge";
 import api from "@/lib/api";
 import { TopNavbar } from '@/components/ems/dashboard/top-navbar';
 import { BottomNav } from '@/components/ems/dashboard/bottom-nav';
+import { ScenarioLibrary } from '@/components/ems/practice/shared/ScenarioLibrary';
 
 export default function PracticeLabPage() {
     return (
@@ -287,32 +289,20 @@ function PracticeLabContent() {
                     </div>
                 </div>
 
-                {/* Info Section */}
+                {/* Scenario Library */}
                 <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.3 }}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
                     className="mt-12"
                 >
-                    <Card className="border-0 shadow-lg bg-gradient-to-r from-purple-50 to-blue-50">
-                        <CardContent className="p-8">
-                            <div className="flex items-start gap-4">
-                                <div className="p-3 bg-purple-100 rounded-xl">
-                                    <Sparkles className="h-6 w-6 text-purple-600" />
-                                </div>
-                                <div>
-                                    <h3 className="text-lg font-bold text-gray-900 mb-2">
-                                        Professional Practice Environment
-                                    </h3>
-                                    <p className="text-gray-600 leading-relaxed">
-                                        Each practice module simulates real government portals (GST Portal, TRACES, Income Tax e-Filing)
-                                        with authentic workflows, validations, and calculations. Practice with confidence and master
-                                        tax compliance procedures before handling real-world scenarios.
-                                    </p>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
+                    <h2 className="text-2xl font-black text-gray-900 flex items-center gap-3 mb-6">
+                        <div className="h-1 w-12 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full"></div>
+                        <BookOpen className="h-6 w-6 text-purple-600" />
+                        Scenario Library
+                        <Badge variant="outline" className="text-xs font-normal">Browse all practice scenarios</Badge>
+                    </h2>
+                    <ScenarioLibrary />
                 </motion.div>
             </div>
 

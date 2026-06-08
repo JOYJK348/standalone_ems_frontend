@@ -30,19 +30,17 @@ export default function TDSLabPage() {
                     setAllocation(tdsAllocation);
                 } else {
                     toast.error('TDS Lab not available');
-                    router.push('/ems/student/practice-lab');
                 }
             }
         } catch (error) {
-            toast.error('Failed to load TDS Lab');
-            router.push('/ems/student/practice-lab');
+            toast.error('Failed to load allocation');
         } finally {
             setLoading(false);
         }
     };
 
     const handleSuccess = () => {
-        fetchAllocation();
+        setLoading(false);
     };
 
     if (loading) {

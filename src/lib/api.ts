@@ -119,7 +119,7 @@ api.interceptors.response.use(
             Cookies.remove('access_token', { path: '/' });
             Cookies.remove('refresh_token', { path: '/' });
             if (typeof window !== 'undefined') {
-                window.location.href = '/?error=session_invalidated';
+                window.location.href = '/login';
             }
         }
         return Promise.reject(error);
