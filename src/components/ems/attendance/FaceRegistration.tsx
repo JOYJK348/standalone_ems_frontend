@@ -6,7 +6,12 @@ import { Camera, CheckCircle2, AlertCircle, Loader2, X, RefreshCw, Zap } from "l
 import { motion, AnimatePresence } from "framer-motion";
 import api from "@/lib/api";
 import { toast } from "sonner";
-import * as faceapi from "@vladmandic/face-api";
+
+let faceapi: any = null;
+async function getFaceapi() {
+    if (!faceapi) faceapi = await import("@vladmandic/face-api");
+    return faceapi;
+}
 
 interface FaceRegistrationProps {
     onSuccess?: () => void;
@@ -31,10 +36,11 @@ export const FaceRegistration = ({ onSuccess, onClose }: FaceRegistrationProps) 
                 const MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model';
                 console.log('Loading face recognition models...');
 
+                const fa = await getFaceapi();
                 await Promise.all([
-                    faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
-                    faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
-                    faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL),
+                    fa.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
+                    fa.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
+                    fa.nets.faceRecognitionNet.loadFromUri(MODEL_URL),
                 ]);
 
                 setModelsLoaded(true);
@@ -111,9 +117,10 @@ export const FaceRegistration = ({ onSuccess, onClose }: FaceRegistrationProps) 
                 if (!video || !(video instanceof HTMLVideoElement) || video.readyState < 2 || video.paused) return;
 
                 try {
-                    const detection = await faceapi.detectSingleFace(
+                    const fa = await getFaceapi();
+                    const detection = await fa.detectSingleFace(
                         video,
-                        new faceapi.TinyFaceDetectorOptions({ inputSize: 160, scoreThreshold: 0.5 })
+                        new fa.TinyFaceDetectorOptions({ inputSize: 160, scoreThreshold: 0.5 })
                     );
                     setFaceDetected(!!detection);
                 } catch (e) {
@@ -145,7 +152,8 @@ export const FaceRegistration = ({ onSuccess, onClose }: FaceRegistrationProps) 
         try {
             for (let i = 0; i < 3; i++) {
                 await new Promise(r => setTimeout(r, 600));
-                const detection = await faceapi.detectSingleFace(video, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceDescriptor();
+                const fa = await getFaceapi();
+                const detection = await fa.detectSingleFace(video, new fa.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceDescriptor();
                 if (!detection) throw new Error("Face detection interrupted. Please stay still and look directly at the camera while we secure your profile.");
                 descriptors.push(Array.from(detection.descriptor));
 

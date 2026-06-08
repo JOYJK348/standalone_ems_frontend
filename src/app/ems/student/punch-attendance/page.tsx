@@ -21,7 +21,12 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import api from "@/lib/api";
-import * as faceapi from 'face-api.js';
+
+let faceapi: any = null;
+async function getFaceapi() {
+    if (!faceapi) faceapi = await import('face-api.js');
+    return faceapi;
+}
 
 export default function PunchAttendancePage() {
     const [loading, setLoading] = useState(true);
@@ -46,11 +51,12 @@ export default function PunchAttendancePage() {
 
     const loadModels = async () => {
         try {
+            const fa = await getFaceapi();
             const MODEL_URL = '/models';
             await Promise.all([
-                faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
-                faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
-                faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL)
+                fa.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
+                fa.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
+                fa.nets.faceRecognitionNet.loadFromUri(MODEL_URL)
             ]);
             setModelsLoaded(true);
         } catch (error) {
@@ -119,8 +125,9 @@ export default function PunchAttendancePage() {
     const detectFace = async () => {
         if (!videoRef.current || !canvasRef.current) return;
 
-        const detection = await faceapi
-            .detectSingleFace(videoRef.current, new faceapi.TinyFaceDetectorOptions())
+        const fa = await getFaceapi();
+        const detection = await fa
+            .detectSingleFace(videoRef.current, new fa.TinyFaceDetectorOptions())
             .withFaceLandmarks()
             .withFaceDescriptor();
 
@@ -128,10 +135,10 @@ export default function PunchAttendancePage() {
             setFaceDetected(true);
             const canvas = canvasRef.current;
             const displaySize = { width: videoRef.current.width, height: videoRef.current.height };
-            faceapi.matchDimensions(canvas, displaySize);
-            const resizedDetection = faceapi.resizeResults(detection, displaySize);
+            fa.matchDimensions(canvas, displaySize);
+            const resizedDetection = fa.resizeResults(detection, displaySize);
             canvas.getContext('2d')?.clearRect(0, 0, canvas.width, canvas.height);
-            faceapi.draw.drawDetections(canvas, resizedDetection);
+            fa.draw.drawDetections(canvas, resizedDetection);
         } else {
             setFaceDetected(false);
         }
@@ -156,9 +163,9 @@ export default function PunchAttendancePage() {
         try {
             setCapturing(true);
 
-            // Get face descriptor
-            const detection = await faceapi
-                .detectSingleFace(videoRef.current!, new faceapi.TinyFaceDetectorOptions())
+            const fa2 = await getFaceapi();
+            const detection = await fa2
+                .detectSingleFace(videoRef.current!, new fa2.TinyFaceDetectorOptions())
                 .withFaceLandmarks()
                 .withFaceDescriptor();
 
