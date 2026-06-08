@@ -16,7 +16,6 @@ import {
     TrendingUp,
     Clock,
 } from "lucide-react";
-import { motion } from "framer-motion";
 import api from "@/lib/api";
 import { toast } from "sonner";
 
@@ -59,15 +58,22 @@ export default function TutorStudentsPage() {
             }
         } catch (error: any) {
             console.error("Error fetching students:", error);
-            toast.error(error.response?.data?.message || "Failed to load students");
+            toast.error(
+                error.response?.data?.message || "Failed to load students",
+            );
         } finally {
             setLoading(false);
         }
     };
 
-    const filteredStudents = enrollments.filter((enrollment) =>
-        `${enrollment.students.first_name} ${enrollment.students.last_name}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        enrollment.students.student_code.toLowerCase().includes(searchQuery.toLowerCase())
+    const filteredStudents = enrollments.filter(
+        (enrollment) =>
+            `${enrollment.students.first_name} ${enrollment.students.last_name}`
+                .toLowerCase()
+                .includes(searchQuery.toLowerCase()) ||
+            enrollment.students.student_code
+                .toLowerCase()
+                .includes(searchQuery.toLowerCase()),
     );
 
     return (
@@ -107,7 +113,9 @@ export default function TutorStudentsPage() {
                 {loading ? (
                     <div className="flex items-center justify-center py-12">
                         <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
-                        <span className="ml-3 text-gray-600">Loading students...</span>
+                        <span className="ml-3 text-gray-600">
+                            Loading students...
+                        </span>
                     </div>
                 ) : filteredStudents.length === 0 ? (
                     <Card className="border-0 shadow-lg">
@@ -117,33 +125,41 @@ export default function TutorStudentsPage() {
                                 No Students Found
                             </h3>
                             <p className="text-gray-600">
-                                When students enroll in your courses, they will appear here
+                                When students enroll in your courses, they will
+                                appear here
                             </p>
                         </CardContent>
                     </Card>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {filteredStudents.map((enrollment, index) => (
-                            <motion.div
-                                key={enrollment.id}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: index * 0.1 }}
-                            >
+                            <div key={enrollment.id}>
                                 <Card className="border-0 shadow-lg hover:shadow-xl transition-all group h-full">
                                     <CardHeader className="pb-3">
                                         <div className="flex items-start justify-between">
                                             <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-lg">
-                                                {enrollment.students.first_name.charAt(0)}
-                                                {enrollment.students.last_name.charAt(0)}
+                                                {enrollment.students.first_name.charAt(
+                                                    0,
+                                                )}
+                                                {enrollment.students.last_name.charAt(
+                                                    0,
+                                                )}
                                             </div>
                                             <div className="text-right">
-                                                <p className="text-xs text-gray-500 font-medium">Code</p>
-                                                <p className="text-sm font-bold text-gray-900">{enrollment.students.student_code}</p>
+                                                <p className="text-xs text-gray-500 font-medium">
+                                                    Code
+                                                </p>
+                                                <p className="text-sm font-bold text-gray-900">
+                                                    {
+                                                        enrollment.students
+                                                            .student_code
+                                                    }
+                                                </p>
                                             </div>
                                         </div>
                                         <CardTitle className="text-lg mt-3">
-                                            {enrollment.students.first_name} {enrollment.students.last_name}
+                                            {enrollment.students.first_name}{" "}
+                                            {enrollment.students.last_name}
                                         </CardTitle>
                                         <p className="text-sm text-blue-600 font-medium flex items-center gap-1">
                                             <BookOpen className="h-3 w-3" />
@@ -155,40 +171,67 @@ export default function TutorStudentsPage() {
                                             {/* Progress bar */}
                                             <div>
                                                 <div className="flex items-center justify-between text-xs mb-1">
-                                                    <span className="text-gray-500">Course Progress</span>
-                                                    <span className="font-bold text-blue-600">{enrollment.completion_percentage}%</span>
+                                                    <span className="text-gray-500">
+                                                        Course Progress
+                                                    </span>
+                                                    <span className="font-bold text-blue-600">
+                                                        {
+                                                            enrollment.completion_percentage
+                                                        }
+                                                        %
+                                                    </span>
                                                 </div>
                                                 <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
                                                     <div
                                                         className="h-full bg-blue-600 transition-all duration-500"
-                                                        style={{ width: `${enrollment.completion_percentage}%` }}
+                                                        style={{
+                                                            width: `${enrollment.completion_percentage}%`,
+                                                        }}
                                                     />
                                                 </div>
                                                 <p className="text-[10px] text-gray-400 mt-1">
-                                                    {enrollment.lessons_completed} of {enrollment.total_lessons} lessons completed
+                                                    {
+                                                        enrollment.lessons_completed
+                                                    }{" "}
+                                                    of{" "}
+                                                    {enrollment.total_lessons}{" "}
+                                                    lessons completed
                                                 </p>
                                             </div>
 
                                             <div className="grid grid-cols-1 gap-2 text-sm">
                                                 <div className="flex items-center gap-2 text-gray-600">
                                                     <Mail className="h-4 w-4 text-gray-400" />
-                                                    <span className="truncate">{enrollment.students.email}</span>
+                                                    <span className="truncate">
+                                                        {
+                                                            enrollment.students
+                                                                .email
+                                                        }
+                                                    </span>
                                                 </div>
                                                 <div className="flex items-center gap-2 text-gray-600">
                                                     <Phone className="h-4 w-4 text-gray-400" />
-                                                    <span>{enrollment.students.phone || "No phone"}</span>
+                                                    <span>
+                                                        {enrollment.students
+                                                            .phone ||
+                                                            "No phone"}
+                                                    </span>
                                                 </div>
                                             </div>
 
                                             <div className="pt-2">
-                                                <Button size="sm" variant="outline" className="w-full">
+                                                <Button
+                                                    size="sm"
+                                                    variant="outline"
+                                                    className="w-full"
+                                                >
                                                     View Progress Details
                                                 </Button>
                                             </div>
                                         </div>
                                     </CardContent>
                                 </Card>
-                            </motion.div>
+                            </div>
                         ))}
                     </div>
                 )}

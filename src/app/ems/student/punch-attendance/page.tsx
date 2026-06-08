@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
 import { TopNavbar } from "@/components/ems/dashboard/top-navbar";
 import { BottomNav } from "@/components/ems/dashboard/bottom-nav";
 import { Card, CardContent } from "@/components/ui/card";
@@ -17,14 +16,14 @@ import {
     AlertCircle,
     ChevronLeft,
     User,
-    Shield
+    Shield,
 } from "lucide-react";
 import Link from "next/link";
 import api from "@/lib/api";
 
 let faceapi: any = null;
 async function getFaceapi() {
-    if (!faceapi) faceapi = await import('@vladmandic/face-api');
+    if (!faceapi) faceapi = await import("@vladmandic/face-api");
     return faceapi;
 }
 
@@ -34,7 +33,10 @@ export default function PunchAttendancePage() {
     const [selectedSession, setSelectedSession] = useState<any>(null);
     const [showCamera, setShowCamera] = useState(false);
     const [capturing, setCapturing] = useState(false);
-    const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
+    const [location, setLocation] = useState<{
+        lat: number;
+        lng: number;
+    } | null>(null);
     const [faceDetected, setFaceDetected] = useState(false);
     const [hasProfile, setHasProfile] = useState(false);
     const [modelsLoaded, setModelsLoaded] = useState(false);
@@ -52,23 +54,25 @@ export default function PunchAttendancePage() {
     const loadModels = async () => {
         try {
             const fa = await getFaceapi();
-            const MODEL_URL = '/models';
+            const MODEL_URL = "/models";
             await Promise.all([
                 fa.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
                 fa.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
-                fa.nets.faceRecognitionNet.loadFromUri(MODEL_URL)
+                fa.nets.faceRecognitionNet.loadFromUri(MODEL_URL),
             ]);
             setModelsLoaded(true);
         } catch (error) {
-            console.error('Failed to load face detection models:', error);
-            toast.error('Face detection system unavailable');
+            console.error("Failed to load face detection models:", error);
+            toast.error("Face detection system unavailable");
         }
     };
 
     const checkFaceProfile = async () => {
         try {
-            const response = await api.get('/ems/student/face-profile');
-            setHasProfile(response.data.success && response.data.data?.is_active);
+            const response = await api.get("/ems/student/face-profile");
+            setHasProfile(
+                response.data.success && response.data.data?.is_active,
+            );
         } catch (error) {
             setHasProfile(false);
         }
@@ -77,13 +81,13 @@ export default function PunchAttendancePage() {
     const fetchSessions = async () => {
         try {
             setLoading(true);
-            const response = await api.get('/ems/attendance?mode=smart-list');
+            const response = await api.get("/ems/attendance?mode=smart-list");
             if (response.data.success) {
                 setSessions(response.data.data || []);
             }
         } catch (error) {
-            console.error('Error:', error);
-            toast.error('Failed to load sessions');
+            console.error("Error:", error);
+            toast.error("Failed to load sessions");
         } finally {
             setLoading(false);
         }
@@ -91,23 +95,25 @@ export default function PunchAttendancePage() {
 
     const startCamera = async () => {
         if (!hasProfile) {
-            toast.error('Please register your face profile first!', {
+            toast.error("Please register your face profile first!", {
                 action: {
-                    label: 'Register Now',
-                    onClick: () => window.location.href = '/ems/student/profile/register-face'
-                }
+                    label: "Register Now",
+                    onClick: () =>
+                        (window.location.href =
+                            "/ems/student/profile/register-face"),
+                },
             });
             return;
         }
 
         if (!modelsLoaded) {
-            toast.error('Face detection system is loading...');
+            toast.error("Face detection system is loading...");
             return;
         }
 
         try {
             const stream = await navigator.mediaDevices.getUserMedia({
-                video: { facingMode: 'user', width: 640, height: 480 }
+                video: { facingMode: "user", width: 640, height: 480 },
             });
 
             if (videoRef.current) {
@@ -117,8 +123,8 @@ export default function PunchAttendancePage() {
                 detectFace();
             }
         } catch (error) {
-            console.error('Camera error:', error);
-            toast.error('Unable to access camera');
+            console.error("Camera error:", error);
+            toast.error("Unable to access camera");
         }
     };
 
@@ -127,17 +133,25 @@ export default function PunchAttendancePage() {
 
         const fa = await getFaceapi();
         const detection = await fa
-            .detectSingleFace(videoRef.current, new fa.TinyFaceDetectorOptions())
+            .detectSingleFace(
+                videoRef.current,
+                new fa.TinyFaceDetectorOptions(),
+            )
             .withFaceLandmarks()
             .withFaceDescriptor();
 
         if (detection) {
             setFaceDetected(true);
             const canvas = canvasRef.current;
-            const displaySize = { width: videoRef.current.width, height: videoRef.current.height };
+            const displaySize = {
+                width: videoRef.current.width,
+                height: videoRef.current.height,
+            };
             fa.matchDimensions(canvas, displaySize);
             const resizedDetection = fa.resizeResults(detection, displaySize);
-            canvas.getContext('2d')?.clearRect(0, 0, canvas.width, canvas.height);
+            canvas
+                .getContext("2d")
+                ?.clearRect(0, 0, canvas.width, canvas.height);
             fa.draw.drawDetections(canvas, resizedDetection);
         } else {
             setFaceDetected(false);
@@ -150,12 +164,12 @@ export default function PunchAttendancePage() {
 
     const captureAttendance = async () => {
         if (!faceDetected) {
-            toast.error('No face detected. Please position your face clearly.');
+            toast.error("No face detected. Please position your face clearly.");
             return;
         }
 
         if (!location) {
-            toast.error('Getting your location...');
+            toast.error("Getting your location...");
             getCurrentLocation();
             return;
         }
@@ -165,45 +179,53 @@ export default function PunchAttendancePage() {
 
             const fa2 = await getFaceapi();
             const detection = await fa2
-                .detectSingleFace(videoRef.current!, new fa2.TinyFaceDetectorOptions())
+                .detectSingleFace(
+                    videoRef.current!,
+                    new fa2.TinyFaceDetectorOptions(),
+                )
                 .withFaceLandmarks()
                 .withFaceDescriptor();
 
             if (!detection) {
-                toast.error('Face detection failed. Please try again.');
+                toast.error("Face detection failed. Please try again.");
                 return;
             }
 
             // Capture image
-            const canvas = document.createElement('canvas');
+            const canvas = document.createElement("canvas");
             canvas.width = videoRef.current!.videoWidth;
             canvas.height = videoRef.current!.videoHeight;
-            canvas.getContext('2d')?.drawImage(videoRef.current!, 0, 0);
-            const imageData = canvas.toDataURL('image/jpeg', 0.8);
+            canvas.getContext("2d")?.drawImage(videoRef.current!, 0, 0);
+            const imageData = canvas.toDataURL("image/jpeg", 0.8);
 
             // Submit attendance
-            const response = await api.post('/ems/attendance/verify', {
+            const response = await api.post("/ems/attendance/verify", {
                 sessionId: selectedSession.id,
-                verificationType: selectedSession.recommended_action === 'PUNCH_OUT' ? 'CLOSING' : 'OPENING',
+                verificationType:
+                    selectedSession.recommended_action === "PUNCH_OUT"
+                        ? "CLOSING"
+                        : "OPENING",
                 faceImageUrl: imageData,
                 faceEmbedding: Array.from(detection.descriptor),
                 latitude: location.lat,
                 longitude: location.lng,
                 locationAccuracy: 10,
-                deviceInfo: { userAgent: navigator.userAgent }
+                deviceInfo: { userAgent: navigator.userAgent },
             });
 
             if (response.data.success) {
-                toast.success('Attendance marked successfully! ✓');
+                toast.success("Attendance marked successfully! ✓");
                 stopCamera();
                 setSelectedSession(null);
                 fetchSessions();
             } else {
-                toast.error(response.data.message || 'Verification failed');
+                toast.error(response.data.message || "Verification failed");
             }
         } catch (error: any) {
-            console.error('Capture error:', error);
-            toast.error(error.response?.data?.message || 'Failed to mark attendance');
+            console.error("Capture error:", error);
+            toast.error(
+                error.response?.data?.message || "Failed to mark attendance",
+            );
         } finally {
             setCapturing(false);
         }
@@ -215,21 +237,21 @@ export default function PunchAttendancePage() {
                 (position) => {
                     setLocation({
                         lat: position.coords.latitude,
-                        lng: position.coords.longitude
+                        lng: position.coords.longitude,
                     });
-                    toast.success('Location acquired');
+                    toast.success("Location acquired");
                 },
                 (error) => {
-                    console.error('Location error:', error);
-                    toast.error('Unable to get location. Please enable GPS.');
-                }
+                    console.error("Location error:", error);
+                    toast.error("Unable to get location. Please enable GPS.");
+                },
             );
         }
     };
 
     const stopCamera = () => {
         if (streamRef.current) {
-            streamRef.current.getTracks().forEach(track => track.stop());
+            streamRef.current.getTracks().forEach((track) => track.stop());
             streamRef.current = null;
         }
         setShowCamera(false);
@@ -257,14 +279,18 @@ export default function PunchAttendancePage() {
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
                 <div className="mb-4">
                     <Link href="/ems/student/dashboard">
-                        <Button variant="ghost" size="sm" className="hover:bg-white/80">
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="hover:bg-white/80"
+                        >
                             <ChevronLeft className="h-4 w-4 mr-1" />
                             Back to Dashboard
                         </Button>
                     </Link>
                 </div>
 
-                <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
+                <div className="mb-8">
                     <h1 className="text-3xl sm:text-4xl font-bold mb-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                         Punch Attendance
                     </h1>
@@ -272,7 +298,7 @@ export default function PunchAttendancePage() {
                         <Shield className="h-4 w-4" />
                         Biometric Verification
                     </p>
-                </motion.div>
+                </div>
 
                 {!hasProfile && (
                     <Card className="mb-6 border-amber-200 bg-amber-50">
@@ -280,12 +306,18 @@ export default function PunchAttendancePage() {
                             <div className="flex items-start gap-3">
                                 <AlertCircle className="h-5 w-5 text-amber-600 mt-0.5" />
                                 <div className="flex-1">
-                                    <h3 className="font-semibold text-amber-900 mb-1">Face Profile Required</h3>
+                                    <h3 className="font-semibold text-amber-900 mb-1">
+                                        Face Profile Required
+                                    </h3>
                                     <p className="text-sm text-amber-700 mb-3">
-                                        You need to register your face profile before marking attendance.
+                                        You need to register your face profile
+                                        before marking attendance.
                                     </p>
                                     <Link href="/ems/student/profile/register-face">
-                                        <Button size="sm" className="bg-amber-600 hover:bg-amber-700">
+                                        <Button
+                                            size="sm"
+                                            className="bg-amber-600 hover:bg-amber-700"
+                                        >
                                             <User className="h-4 w-4 mr-2" />
                                             Register Face Now
                                         </Button>
@@ -298,15 +330,24 @@ export default function PunchAttendancePage() {
 
                 {!selectedSession ? (
                     <div>
-                        <h2 className="text-xl font-bold mb-4 text-gray-900">Select Class Session</h2>
-                        <p className="text-gray-600 mb-6">Choose your course to mark attendance</p>
+                        <h2 className="text-xl font-bold mb-4 text-gray-900">
+                            Select Class Session
+                        </h2>
+                        <p className="text-gray-600 mb-6">
+                            Choose your course to mark attendance
+                        </p>
 
                         {sessions.length === 0 ? (
                             <Card className="border-0 shadow-lg">
                                 <CardContent className="p-12 text-center">
                                     <Clock className="h-16 w-16 mx-auto mb-4 text-gray-300" />
-                                    <h3 className="text-lg font-semibold text-gray-900 mb-2">No Active Sessions</h3>
-                                    <p className="text-gray-600">There are no attendance sessions available right now.</p>
+                                    <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                                        No Active Sessions
+                                    </h3>
+                                    <p className="text-gray-600">
+                                        There are no attendance sessions
+                                        available right now.
+                                    </p>
                                 </CardContent>
                             </Card>
                         ) : (
@@ -315,27 +356,48 @@ export default function PunchAttendancePage() {
                                     <Card
                                         key={session.id}
                                         className="border-0 shadow-lg hover:shadow-xl transition-all cursor-pointer group"
-                                        onClick={() => setSelectedSession(session)}
+                                        onClick={() =>
+                                            setSelectedSession(session)
+                                        }
                                     >
                                         <CardContent className="p-6">
                                             <div className="flex items-center justify-between">
                                                 <div className="flex-1">
                                                     <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
-                                                        {session.course?.course_name}
+                                                        {
+                                                            session.course
+                                                                ?.course_name
+                                                        }
                                                     </h3>
                                                     <p className="text-sm text-gray-600 mt-1">
-                                                        Batch: {session.batch?.batch_name}
+                                                        Batch:{" "}
+                                                        {
+                                                            session.batch
+                                                                ?.batch_name
+                                                        }
                                                     </p>
                                                     <div className="flex items-center gap-4 mt-3 text-sm text-gray-500">
                                                         <span className="flex items-center gap-1">
                                                             <Clock className="h-4 w-4" />
-                                                            {new Date(session.session_date).toLocaleDateString()}
+                                                            {new Date(
+                                                                session.session_date,
+                                                            ).toLocaleDateString()}
                                                         </span>
-                                                        <span className={`px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest ${session.recommended_action === 'PUNCH_IN' ? 'bg-green-100 text-green-700' :
-                                                                session.recommended_action === 'PUNCH_OUT' ? 'bg-orange-100 text-orange-700' :
-                                                                    'bg-gray-100 text-gray-700'
-                                                            }`}>
-                                                            {session.recommended_action.replace('_', ' ')}
+                                                        <span
+                                                            className={`px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest ${
+                                                                session.recommended_action ===
+                                                                "PUNCH_IN"
+                                                                    ? "bg-green-100 text-green-700"
+                                                                    : session.recommended_action ===
+                                                                        "PUNCH_OUT"
+                                                                      ? "bg-orange-100 text-orange-700"
+                                                                      : "bg-gray-100 text-gray-700"
+                                                            }`}
+                                                        >
+                                                            {session.recommended_action.replace(
+                                                                "_",
+                                                                " ",
+                                                            )}
                                                         </span>
                                                     </div>
                                                 </div>
@@ -349,28 +411,58 @@ export default function PunchAttendancePage() {
                     </div>
                 ) : !showCamera ? (
                     <Card className="border-0 shadow-2xl overflow-hidden">
-                        <div className={`bg-gradient-to-r p-6 text-white ${selectedSession.recommended_action === 'PUNCH_OUT' ? 'from-orange-600 to-red-600' : 'from-blue-600 to-purple-600'
-                            }`}>
+                        <div
+                            className={`bg-gradient-to-r p-6 text-white ${
+                                selectedSession.recommended_action ===
+                                "PUNCH_OUT"
+                                    ? "from-orange-600 to-red-600"
+                                    : "from-blue-600 to-purple-600"
+                            }`}
+                        >
                             <h2 className="text-2xl font-bold mb-2">
-                                {selectedSession.recommended_action === 'PUNCH_OUT' ? 'Exit Attendance' : 'Entry Attendance'}
+                                {selectedSession.recommended_action ===
+                                "PUNCH_OUT"
+                                    ? "Exit Attendance"
+                                    : "Entry Attendance"}
                             </h2>
-                            <p className="text-blue-100">Confirm your biometric to {selectedSession.recommended_action === 'PUNCH_OUT' ? 'check-out' : 'check-in'}</p>
+                            <p className="text-blue-100">
+                                Confirm your biometric to{" "}
+                                {selectedSession.recommended_action ===
+                                "PUNCH_OUT"
+                                    ? "check-out"
+                                    : "check-in"}
+                            </p>
                         </div>
                         <CardContent className="p-8">
                             <div className="mb-6">
-                                <h3 className="text-xl font-bold text-gray-900 mb-2">{selectedSession.course?.course_name}</h3>
-                                <p className="text-gray-600">Batch: {selectedSession.batch?.batch_name}</p>
+                                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                                    {selectedSession.course?.course_name}
+                                </h3>
+                                <p className="text-gray-600">
+                                    Batch: {selectedSession.batch?.batch_name}
+                                </p>
                             </div>
 
                             <div className="flex gap-3">
                                 <Button
                                     onClick={startCamera}
-                                    disabled={!hasProfile || selectedSession.recommended_action === 'COMPLETED'}
-                                    className={`flex-1 py-6 text-lg font-semibold text-white ${selectedSession.recommended_action === 'PUNCH_OUT' ? 'bg-gradient-to-r from-orange-600 to-red-600' : 'bg-gradient-to-r from-blue-600 to-purple-600'
-                                        }`}
+                                    disabled={
+                                        !hasProfile ||
+                                        selectedSession.recommended_action ===
+                                            "COMPLETED"
+                                    }
+                                    className={`flex-1 py-6 text-lg font-semibold text-white ${
+                                        selectedSession.recommended_action ===
+                                        "PUNCH_OUT"
+                                            ? "bg-gradient-to-r from-orange-600 to-red-600"
+                                            : "bg-gradient-to-r from-blue-600 to-purple-600"
+                                    }`}
                                 >
                                     <Camera className="h-5 w-5 mr-2" />
-                                    {selectedSession.recommended_action === 'PUNCH_OUT' ? 'Punch Out' : 'Punch In'}
+                                    {selectedSession.recommended_action ===
+                                    "PUNCH_OUT"
+                                        ? "Punch Out"
+                                        : "Punch In"}
                                 </Button>
                                 <Button
                                     onClick={() => setSelectedSession(null)}
@@ -384,10 +476,24 @@ export default function PunchAttendancePage() {
                     </Card>
                 ) : (
                     <Card className="border-0 shadow-2xl overflow-hidden">
-                        <div className={`bg-gradient-to-r p-6 text-white ${selectedSession.recommended_action === 'PUNCH_OUT' ? 'from-orange-600 to-red-600' : 'from-blue-600 to-purple-600'
-                            }`}>
-                            <h2 className="text-2xl font-bold mb-2">Face Verification</h2>
-                            <p className="text-blue-100">Position your face in the frame for {selectedSession.recommended_action === 'PUNCH_OUT' ? 'Exit' : 'Entry'}</p>
+                        <div
+                            className={`bg-gradient-to-r p-6 text-white ${
+                                selectedSession.recommended_action ===
+                                "PUNCH_OUT"
+                                    ? "from-orange-600 to-red-600"
+                                    : "from-blue-600 to-purple-600"
+                            }`}
+                        >
+                            <h2 className="text-2xl font-bold mb-2">
+                                Face Verification
+                            </h2>
+                            <p className="text-blue-100">
+                                Position your face in the frame for{" "}
+                                {selectedSession.recommended_action ===
+                                "PUNCH_OUT"
+                                    ? "Exit"
+                                    : "Entry"}
+                            </p>
                         </div>
                         <CardContent className="p-8">
                             <div className="relative mb-6 rounded-2xl overflow-hidden bg-black">
@@ -431,7 +537,9 @@ export default function PunchAttendancePage() {
                             <div className="flex gap-3">
                                 <Button
                                     onClick={captureAttendance}
-                                    disabled={!faceDetected || !location || capturing}
+                                    disabled={
+                                        !faceDetected || !location || capturing
+                                    }
                                     className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white py-6 text-lg font-semibold"
                                 >
                                     {capturing ? (

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { motion } from "framer-motion";
 import { TopNavbar } from "@/components/ems/dashboard/top-navbar";
 import { BottomNav } from "@/components/ems/dashboard/bottom-nav";
 import { Card, CardContent } from "@/components/ui/card";
@@ -14,7 +13,7 @@ import {
     ChevronLeft,
     User,
     Shield,
-    AlertCircle
+    AlertCircle,
 } from "lucide-react";
 import Link from "next/link";
 import api from "@/lib/api";
@@ -48,7 +47,8 @@ export default function RegisterFacePage() {
                     faceapi = await import("@vladmandic/face-api");
                 }
 
-                const MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model';
+                const MODEL_URL =
+                    "https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model";
                 await Promise.all([
                     faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
                     faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
@@ -75,7 +75,7 @@ export default function RegisterFacePage() {
                 detectionInterval = setInterval(async () => {
                     const detections = await faceapi.detectSingleFace(
                         videoRef.current!,
-                        new faceapi.TinyFaceDetectorOptions()
+                        new faceapi.TinyFaceDetectorOptions(),
                     );
                     setFaceDetected(!!detections);
                 }, 500);
@@ -88,7 +88,7 @@ export default function RegisterFacePage() {
 
     const checkExistingProfile = async () => {
         try {
-            const response = await api.get('/ems/student/face-profile');
+            const response = await api.get("/ems/student/face-profile");
             if (response.data.success && response.data.data?.is_active) {
                 setHasExistingProfile(true);
             }
@@ -100,7 +100,7 @@ export default function RegisterFacePage() {
     const startCamera = async () => {
         try {
             const stream = await navigator.mediaDevices.getUserMedia({
-                video: { facingMode: 'user', width: 640, height: 480 }
+                video: { facingMode: "user", width: 640, height: 480 },
             });
 
             if (videoRef.current) {
@@ -113,14 +113,14 @@ export default function RegisterFacePage() {
                 };
             }
         } catch (error) {
-            console.error('Camera error:', error);
-            toast.error('Unable to access camera.');
+            console.error("Camera error:", error);
+            toast.error("Unable to access camera.");
         }
     };
 
     const captureFace = async () => {
         if (!videoRef.current || !cameraReady || !faceDetected) {
-            toast.error('Position your face clearly in the frame');
+            toast.error("Position your face clearly in the frame");
             return;
         }
 
@@ -128,13 +128,18 @@ export default function RegisterFacePage() {
             setCapturing(true);
 
             // 3. Extract Full Biometric Descriptor (The "Signature")
-            const detection = await faceapi.detectSingleFace(
-                videoRef.current,
-                new faceapi.TinyFaceDetectorOptions()
-            ).withFaceLandmarks().withFaceDescriptor();
+            const detection = await faceapi
+                .detectSingleFace(
+                    videoRef.current,
+                    new faceapi.TinyFaceDetectorOptions(),
+                )
+                .withFaceLandmarks()
+                .withFaceDescriptor();
 
             if (!detection) {
-                toast.error("Face Mismatched or not detected clearly. Try again.");
+                toast.error(
+                    "Face Mismatched or not detected clearly. Try again.",
+                );
                 return;
             }
 
@@ -142,31 +147,34 @@ export default function RegisterFacePage() {
             const faceEmbedding = Array.from(detection.descriptor);
 
             // Capture raw image for display/admin
-            const canvas = document.createElement('canvas');
+            const canvas = document.createElement("canvas");
             canvas.width = videoRef.current.videoWidth;
             canvas.height = videoRef.current.videoHeight;
-            const ctx = canvas.getContext('2d');
+            const ctx = canvas.getContext("2d");
             if (!ctx) return;
             ctx.drawImage(videoRef.current, 0, 0);
-            const imageData = canvas.toDataURL('image/jpeg', 0.8);
+            const imageData = canvas.toDataURL("image/jpeg", 0.8);
 
             // Submit face profile with Biometric Embedding
-            const response = await api.post('/ems/student/face-profile/register', {
-                faceImageUrl: imageData,
-                faceEmbedding: faceEmbedding, // This is the mathematical key
-                qualityScore: 98
-            });
+            const response = await api.post(
+                "/ems/student/face-profile/register",
+                {
+                    faceImageUrl: imageData,
+                    faceEmbedding: faceEmbedding, // This is the mathematical key
+                    qualityScore: 98,
+                },
+            );
 
             if (response.data.success) {
-                toast.success('Biometric Identity Registered! ✓');
+                toast.success("Biometric Identity Registered! ✓");
                 stopCamera();
                 setTimeout(() => {
-                    window.location.href = '/ems/student/punch-attendance';
+                    window.location.href = "/ems/student/punch-attendance";
                 }, 1500);
             }
         } catch (error: any) {
-            console.error('Capture error:', error);
-            toast.error('Registration failed. Please try again.');
+            console.error("Capture error:", error);
+            toast.error("Registration failed. Please try again.");
         } finally {
             setCapturing(false);
         }
@@ -174,7 +182,7 @@ export default function RegisterFacePage() {
 
     const stopCamera = () => {
         if (streamRef.current) {
-            streamRef.current.getTracks().forEach(track => track.stop());
+            streamRef.current.getTracks().forEach((track) => track.stop());
             streamRef.current = null;
         }
         setShowCamera(false);
@@ -188,14 +196,18 @@ export default function RegisterFacePage() {
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
                 <div className="mb-4">
                     <Link href="/ems/student/profile">
-                        <Button variant="ghost" size="sm" className="hover:bg-white/80">
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="hover:bg-white/80"
+                        >
                             <ChevronLeft className="h-4 w-4 mr-1" />
                             Back to Profile
                         </Button>
                     </Link>
                 </div>
 
-                <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
+                <div className="mb-8">
                     <h1 className="text-3xl sm:text-4xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
                         Register Face Profile
                     </h1>
@@ -203,7 +215,7 @@ export default function RegisterFacePage() {
                         <Shield className="h-4 w-4" />
                         Secure biometric authentication for attendance
                     </p>
-                </motion.div>
+                </div>
 
                 {hasExistingProfile && (
                     <Card className="mb-6 border-blue-200 bg-blue-50">
@@ -211,9 +223,13 @@ export default function RegisterFacePage() {
                             <div className="flex items-start gap-3">
                                 <AlertCircle className="h-5 w-5 text-blue-600 mt-0.5" />
                                 <div>
-                                    <h3 className="font-semibold text-blue-900 mb-1">Profile Already Exists</h3>
+                                    <h3 className="font-semibold text-blue-900 mb-1">
+                                        Profile Already Exists
+                                    </h3>
                                     <p className="text-sm text-blue-700">
-                                        You already have a registered face profile. Re-registering will replace your existing profile.
+                                        You already have a registered face
+                                        profile. Re-registering will replace
+                                        your existing profile.
                                     </p>
                                 </div>
                             </div>
@@ -224,16 +240,23 @@ export default function RegisterFacePage() {
                 {loading ? (
                     <Card className="border-0 shadow-2xl overflow-hidden p-12 text-center">
                         <Loader2 className="h-12 w-12 animate-spin mx-auto mb-4 text-purple-600" />
-                        <h2 className="text-xl font-bold">Initializing AI Security...</h2>
-                        <p className="text-gray-500">Loading biometric recognition models</p>
+                        <h2 className="text-xl font-bold">
+                            Initializing AI Security...
+                        </h2>
+                        <p className="text-gray-500">
+                            Loading biometric recognition models
+                        </p>
                     </Card>
                 ) : !showCamera ? (
                     <Card className="border-0 shadow-2xl overflow-hidden">
                         <div className="bg-gradient-to-r from-purple-600 to-blue-600 p-8 text-white text-center">
                             <User className="h-16 w-16 mx-auto mb-4" />
-                            <h2 className="text-2xl font-bold mb-2">Face Registration</h2>
+                            <h2 className="text-2xl font-bold mb-2">
+                                Face Registration
+                            </h2>
                             <p className="text-purple-100">
-                                Your face will be used for secure attendance verification
+                                Your face will be used for secure attendance
+                                verification
                             </p>
                         </div>
                         <CardContent className="p-8">
@@ -241,22 +264,34 @@ export default function RegisterFacePage() {
                                 <div className="flex items-start gap-3">
                                     <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
                                     <div>
-                                        <h3 className="font-semibold text-gray-900">Good Lighting</h3>
-                                        <p className="text-sm text-gray-600">Ensure you're in a well-lit area</p>
+                                        <h3 className="font-semibold text-gray-900">
+                                            Good Lighting
+                                        </h3>
+                                        <p className="text-sm text-gray-600">
+                                            Ensure you're in a well-lit area
+                                        </p>
                                     </div>
                                 </div>
                                 <div className="flex items-start gap-3">
                                     <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
                                     <div>
-                                        <h3 className="font-semibold text-gray-900">Face the Camera</h3>
-                                        <p className="text-sm text-gray-600">Look directly at the camera</p>
+                                        <h3 className="font-semibold text-gray-900">
+                                            Face the Camera
+                                        </h3>
+                                        <p className="text-sm text-gray-600">
+                                            Look directly at the camera
+                                        </p>
                                     </div>
                                 </div>
                                 <div className="flex items-start gap-3">
                                     <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
                                     <div>
-                                        <h3 className="font-semibold text-gray-900">Remove Obstructions</h3>
-                                        <p className="text-sm text-gray-600">No sunglasses, masks, or hats</p>
+                                        <h3 className="font-semibold text-gray-900">
+                                            Remove Obstructions
+                                        </h3>
+                                        <p className="text-sm text-gray-600">
+                                            No sunglasses, masks, or hats
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -276,8 +311,12 @@ export default function RegisterFacePage() {
                 ) : (
                     <Card className="border-0 shadow-2xl overflow-hidden">
                         <div className="bg-gradient-to-r from-purple-600 to-blue-600 p-6 text-white">
-                            <h2 className="text-2xl font-bold mb-2">Capture Your Face</h2>
-                            <p className="text-purple-100">Position your face in the center of the frame</p>
+                            <h2 className="text-2xl font-bold mb-2">
+                                Capture Your Face
+                            </h2>
+                            <p className="text-purple-100">
+                                Position your face in the center of the frame
+                            </p>
                         </div>
                         <CardContent className="p-8">
                             <div className="relative mb-6 rounded-2xl overflow-hidden bg-black aspect-video">

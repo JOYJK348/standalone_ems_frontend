@@ -1,6 +1,4 @@
 "use client";
-
-import { motion } from "framer-motion";
 import { PlayCircle, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -19,12 +17,7 @@ export function HeroCard({
     resumeRoute,
 }: HeroCardProps) {
     return (
-        <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="relative mx-4 sm:mx-6 mb-6 rounded-2xl overflow-hidden shadow-xl"
-        >
+        <div className="relative mx-4 sm:mx-6 mb-6 rounded-2xl overflow-hidden shadow-xl">
             {/* Professional Background */}
             <div className="absolute inset-0 bg-blue-600">
                 {/* Subtle Pattern Overlay */}
@@ -33,12 +26,10 @@ export function HeroCard({
 
             {/* Content */}
             <div className="relative p-6 sm:p-8 text-white">
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 }}
-                >
-                    <h2 className="text-xl sm:text-2xl font-bold mb-2">{courseTitle}</h2>
+                <div>
+                    <h2 className="text-xl sm:text-2xl font-bold mb-2">
+                        {courseTitle}
+                    </h2>
                     <p className="text-sm sm:text-base text-white/80 mb-4">
                         Continue where you left off
                     </p>
@@ -55,7 +46,7 @@ export function HeroCard({
                                     strokeWidth="4"
                                     fill="none"
                                 />
-                                <motion.circle
+                                <circle
                                     cx="50%"
                                     cy="50%"
                                     r="45%"
@@ -63,25 +54,21 @@ export function HeroCard({
                                     strokeWidth="4"
                                     fill="none"
                                     strokeDasharray={`${2 * Math.PI * 45}`}
-                                    initial={{ strokeDashoffset: 2 * Math.PI * 45 }}
-                                    animate={{ strokeDashoffset: 2 * Math.PI * 45 * (1 - progressPercent / 100) }}
-                                    transition={{ duration: 1.5, ease: "easeOut" }}
                                     strokeLinecap="round"
                                 />
                             </svg>
                             <div className="absolute inset-0 flex items-center justify-center">
-                                <span className="text-sm sm:text-base font-bold">{progressPercent}%</span>
+                                <span className="text-sm sm:text-base font-bold">
+                                    {progressPercent}%
+                                </span>
                             </div>
                         </div>
                         <div className="flex-1">
-                            <div className="text-xs sm:text-sm text-white/70 mb-1">Course Progress</div>
+                            <div className="text-xs sm:text-sm text-white/70 mb-1">
+                                Course Progress
+                            </div>
                             <div className="h-2 bg-white/20 rounded-full overflow-hidden">
-                                <motion.div
-                                    initial={{ width: 0 }}
-                                    animate={{ width: `${progressPercent}%` }}
-                                    transition={{ duration: 1.5, delay: 0.3 }}
-                                    className="h-full bg-white rounded-full"
-                                />
+                                <div className="h-full bg-white rounded-full" />
                             </div>
                         </div>
                     </div>
@@ -97,8 +84,8 @@ export function HeroCard({
                             <ArrowRight className="h-4 w-4 ml-2" />
                         </Button>
                     </Link>
-                </motion.div>
+                </div>
             </div>
-        </motion.div>
+        </div>
     );
 }

@@ -13,12 +13,18 @@ import {
     Building,
     Target,
     Users2,
-    Info
+    Info,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import api from "@/lib/api";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle,
+    CardDescription,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -29,8 +35,6 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-import { motion } from "framer-motion";
-
 const CreateBatchPage = () => {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
@@ -44,7 +48,7 @@ const CreateBatchPage = () => {
         end_date: "",
         start_time: "09:00",
         end_time: "10:00",
-        max_students: 30
+        max_students: 30,
     });
 
     useEffect(() => {
@@ -67,7 +71,7 @@ const CreateBatchPage = () => {
             const response = await api.post("/ems/batches", {
                 ...formData,
                 course_id: Number(formData.course_id),
-                max_students: Number(formData.max_students)
+                max_students: Number(formData.max_students),
             });
 
             if (response.data.success) {
@@ -75,7 +79,9 @@ const CreateBatchPage = () => {
                 router.push("/ems/tutor/courses"); // Or redirect to a batches list if it exists
             }
         } catch (error: any) {
-            toast.error(error.response?.data?.message || "Failed to create batch");
+            toast.error(
+                error.response?.data?.message || "Failed to create batch",
+            );
         } finally {
             setLoading(false);
         }
@@ -94,12 +100,11 @@ const CreateBatchPage = () => {
                 </Button>
 
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
-                    <motion.div
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                    >
-                        <h1 className="text-4xl font-black text-gray-900 tracking-tight uppercase mb-2">Request New Batch Approval</h1>
-                    </motion.div>
+                    <div>
+                        <h1 className="text-4xl font-black text-gray-900 tracking-tight uppercase mb-2">
+                            Request New Batch Approval
+                        </h1>
+                    </div>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -112,24 +117,38 @@ const CreateBatchPage = () => {
                                             <BookOpen className="h-6 w-6 text-white" />
                                         </div>
                                         <div>
-                                            <CardTitle className="text-xl font-black uppercase tracking-tight text-gray-900">General Information</CardTitle>
+                                            <CardTitle className="text-xl font-black uppercase tracking-tight text-gray-900">
+                                                General Information
+                                            </CardTitle>
                                         </div>
                                     </div>
                                 </CardHeader>
                                 <CardContent className="p-8 space-y-6">
                                     <div className="space-y-2">
-                                        <Label className="text-xs font-black uppercase tracking-widest text-gray-400 ml-1">Assigned Course</Label>
+                                        <Label className="text-xs font-black uppercase tracking-widest text-gray-400 ml-1">
+                                            Assigned Course
+                                        </Label>
                                         <Select
                                             value={formData.course_id}
-                                            onValueChange={(v) => setFormData({ ...formData, course_id: v })}
+                                            onValueChange={(v) =>
+                                                setFormData({
+                                                    ...formData,
+                                                    course_id: v,
+                                                })
+                                            }
                                         >
                                             <SelectTrigger className="h-14 rounded-2xl border-gray-100 bg-gray-50/50 font-bold focus:ring-2 focus:ring-blue-500 transition-all">
                                                 <SelectValue placeholder="Select a course" />
                                             </SelectTrigger>
                                             <SelectContent className="rounded-2xl border-gray-100 shadow-2xl">
-                                                {courses.map(course => (
-                                                    <SelectItem key={course.id} value={course.id.toString()} className="font-bold py-3">
-                                                        {course.course_name} ({course.course_code})
+                                                {courses.map((course) => (
+                                                    <SelectItem
+                                                        key={course.id}
+                                                        value={course.id.toString()}
+                                                        className="font-bold py-3"
+                                                    >
+                                                        {course.course_name} (
+                                                        {course.course_code})
                                                     </SelectItem>
                                                 ))}
                                             </SelectContent>
@@ -138,43 +157,71 @@ const CreateBatchPage = () => {
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="space-y-2">
-                                            <Label className="text-xs font-black uppercase tracking-widest text-gray-400 ml-1">Batch Name</Label>
+                                            <Label className="text-xs font-black uppercase tracking-widest text-gray-400 ml-1">
+                                                Batch Name
+                                            </Label>
                                             <Input
                                                 placeholder="e.g. Spring 2024 Advanced"
                                                 className="h-14 rounded-2xl border-gray-100 bg-gray-50/50 font-bold px-6"
                                                 value={formData.batch_name}
-                                                onChange={(e) => setFormData({ ...formData, batch_name: e.target.value })}
+                                                onChange={(e) =>
+                                                    setFormData({
+                                                        ...formData,
+                                                        batch_name:
+                                                            e.target.value,
+                                                    })
+                                                }
                                                 required
                                             />
                                         </div>
                                         <div className="space-y-2">
-                                            <Label className="text-xs font-black uppercase tracking-widest text-gray-400 ml-1">Batch Code</Label>
+                                            <Label className="text-xs font-black uppercase tracking-widest text-gray-400 ml-1">
+                                                Batch Code
+                                            </Label>
                                             <Input
                                                 placeholder="e.g. BATCH-24-S1"
                                                 className="h-14 rounded-2xl border-gray-100 bg-gray-50/50 font-bold px-6 uppercase"
                                                 value={formData.batch_code}
-                                                onChange={(e) => setFormData({ ...formData, batch_code: e.target.value })}
+                                                onChange={(e) =>
+                                                    setFormData({
+                                                        ...formData,
+                                                        batch_code:
+                                                            e.target.value,
+                                                    })
+                                                }
                                                 required
                                             />
                                         </div>
                                     </div>
 
                                     <div className="space-y-2">
-                                        <Label className="text-xs font-black uppercase tracking-widest text-gray-400 ml-1">Batch Schedule Type</Label>
+                                        <Label className="text-xs font-black uppercase tracking-widest text-gray-400 ml-1">
+                                            Batch Schedule Type
+                                        </Label>
                                         <div className="grid grid-cols-2 gap-4">
-                                            {["WEEKDAY", "WEEKEND"].map((type) => (
-                                                <button
-                                                    key={type}
-                                                    type="button"
-                                                    onClick={() => setFormData({ ...formData, batch_type: type })}
-                                                    className={`py-4 rounded-2xl font-black uppercase text-xs tracking-widest transition-all border-2 ${formData.batch_type === type
-                                                        ? "bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-500/30"
-                                                        : "bg-white border-gray-100 text-gray-400 hover:border-blue-200"
+                                            {["WEEKDAY", "WEEKEND"].map(
+                                                (type) => (
+                                                    <button
+                                                        key={type}
+                                                        type="button"
+                                                        onClick={() =>
+                                                            setFormData({
+                                                                ...formData,
+                                                                batch_type:
+                                                                    type,
+                                                            })
+                                                        }
+                                                        className={`py-4 rounded-2xl font-black uppercase text-xs tracking-widest transition-all border-2 ${
+                                                            formData.batch_type ===
+                                                            type
+                                                                ? "bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-500/30"
+                                                                : "bg-white border-gray-100 text-gray-400 hover:border-blue-200"
                                                         }`}
-                                                >
-                                                    {type}
-                                                </button>
-                                            ))}
+                                                    >
+                                                        {type}
+                                                    </button>
+                                                ),
+                                            )}
                                         </div>
                                     </div>
                                 </CardContent>
@@ -187,34 +234,52 @@ const CreateBatchPage = () => {
                                             <Calendar className="h-6 w-6 text-white" />
                                         </div>
                                         <div>
-                                            <CardTitle className="text-xl font-black uppercase tracking-tight text-gray-900">Schedule & Capacity</CardTitle>
+                                            <CardTitle className="text-xl font-black uppercase tracking-tight text-gray-900">
+                                                Schedule & Capacity
+                                            </CardTitle>
                                         </div>
                                     </div>
                                 </CardHeader>
                                 <CardContent className="p-8 space-y-6">
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="space-y-2">
-                                            <Label className="text-xs font-black uppercase tracking-widest text-gray-400 ml-1">Start Date</Label>
+                                            <Label className="text-xs font-black uppercase tracking-widest text-gray-400 ml-1">
+                                                Start Date
+                                            </Label>
                                             <div className="relative">
                                                 <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                                                 <Input
                                                     type="date"
                                                     className="h-14 rounded-2xl border-gray-100 bg-gray-50/50 font-bold pl-12"
                                                     value={formData.start_date}
-                                                    onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
+                                                    onChange={(e) =>
+                                                        setFormData({
+                                                            ...formData,
+                                                            start_date:
+                                                                e.target.value,
+                                                        })
+                                                    }
                                                     required
                                                 />
                                             </div>
                                         </div>
                                         <div className="space-y-2">
-                                            <Label className="text-xs font-black uppercase tracking-widest text-gray-400 ml-1">End Date</Label>
+                                            <Label className="text-xs font-black uppercase tracking-widest text-gray-400 ml-1">
+                                                End Date
+                                            </Label>
                                             <div className="relative">
                                                 <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                                                 <Input
                                                     type="date"
                                                     className="h-14 rounded-2xl border-gray-100 bg-gray-50/50 font-bold pl-12"
                                                     value={formData.end_date}
-                                                    onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
+                                                    onChange={(e) =>
+                                                        setFormData({
+                                                            ...formData,
+                                                            end_date:
+                                                                e.target.value,
+                                                        })
+                                                    }
                                                     required
                                                 />
                                             </div>
@@ -223,27 +288,48 @@ const CreateBatchPage = () => {
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="space-y-2">
-                                            <Label className="text-xs font-black uppercase tracking-widest text-gray-400 ml-1">Daily Start Time</Label>
+                                            <Label className="text-xs font-black uppercase tracking-widest text-gray-400 ml-1">
+                                                Daily Start Time
+                                            </Label>
                                             <div className="relative">
                                                 <Clock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                                                 <Input
                                                     type="time"
                                                     className="h-14 rounded-2xl border-gray-100 bg-gray-50/50 font-bold pl-12"
                                                     value={formData.start_time}
-                                                    onChange={(e) => setFormData({ ...formData, start_time: e.target.value })}
+                                                    onChange={(e) =>
+                                                        setFormData({
+                                                            ...formData,
+                                                            start_time:
+                                                                e.target.value,
+                                                        })
+                                                    }
                                                     required
                                                 />
                                             </div>
                                         </div>
                                         <div className="space-y-2">
-                                            <Label className="text-xs font-black uppercase tracking-widest text-gray-400 ml-1">Capacity (Max Students)</Label>
+                                            <Label className="text-xs font-black uppercase tracking-widest text-gray-400 ml-1">
+                                                Capacity (Max Students)
+                                            </Label>
                                             <div className="relative">
                                                 <Users2 className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                                                 <Input
                                                     type="number"
                                                     className="h-14 rounded-2xl border-gray-100 bg-gray-50/50 font-bold pl-12"
-                                                    value={formData.max_students}
-                                                    onChange={(e) => setFormData({ ...formData, max_students: Number(e.target.value) })}
+                                                    value={
+                                                        formData.max_students
+                                                    }
+                                                    onChange={(e) =>
+                                                        setFormData({
+                                                            ...formData,
+                                                            max_students:
+                                                                Number(
+                                                                    e.target
+                                                                        .value,
+                                                                ),
+                                                        })
+                                                    }
                                                     required
                                                 />
                                             </div>
@@ -274,19 +360,31 @@ const CreateBatchPage = () => {
                                 <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center mb-6">
                                     <Loader2 className="h-7 w-7 text-blue-400" />
                                 </div>
-                                <h3 className="text-xl font-black uppercase tracking-tight mb-4">Manager Approval</h3>
+                                <h3 className="text-xl font-black uppercase tracking-tight mb-4">
+                                    Manager Approval
+                                </h3>
                                 <div className="space-y-4 text-gray-400 font-medium text-sm leading-relaxed">
                                     <p className="flex gap-3">
                                         <CheckCircle2 className="h-5 w-5 text-emerald-400 shrink-0" />
-                                        <span>New batches require review by an Academic Manager before activation.</span>
+                                        <span>
+                                            New batches require review by an
+                                            Academic Manager before activation.
+                                        </span>
                                     </p>
                                     <p className="flex gap-3">
                                         <CheckCircle2 className="h-5 w-5 text-emerald-400 shrink-0" />
-                                        <span>Once approved, you can start enrolling students and scheduling classes.</span>
+                                        <span>
+                                            Once approved, you can start
+                                            enrolling students and scheduling
+                                            classes.
+                                        </span>
                                     </p>
                                     <p className="flex gap-3">
                                         <CheckCircle2 className="h-5 w-5 text-emerald-400 shrink-0" />
-                                        <span>You will be notified once the status changes to APPROVED.</span>
+                                        <span>
+                                            You will be notified once the status
+                                            changes to APPROVED.
+                                        </span>
                                     </p>
                                 </div>
                             </CardContent>
@@ -297,9 +395,13 @@ const CreateBatchPage = () => {
                                 <Info className="h-5 w-5 text-amber-500" />
                             </div>
                             <div>
-                                <h4 className="font-black uppercase text-[10px] tracking-widest text-amber-600 mb-1">Important Note</h4>
+                                <h4 className="font-black uppercase text-[10px] tracking-widest text-amber-600 mb-1">
+                                    Important Note
+                                </h4>
                                 <p className="text-xs text-gray-500 font-medium leading-relaxed">
-                                    Ensure batch codes follow the institutional format (e.g., YEAR-COURSE-SEQUENCE) to maintain curriculum consistency.
+                                    Ensure batch codes follow the institutional
+                                    format (e.g., YEAR-COURSE-SEQUENCE) to
+                                    maintain curriculum consistency.
                                 </p>
                             </div>
                         </div>

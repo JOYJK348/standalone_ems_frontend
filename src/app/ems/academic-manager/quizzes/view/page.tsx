@@ -15,10 +15,9 @@ import {
     CheckCircle2,
     XCircle,
     Info,
-    Edit3
+    Edit3,
 } from "lucide-react";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import api from "@/lib/api";
 
 interface Option {
@@ -71,7 +70,7 @@ export default function QuizViewPage() {
             setLoading(true);
             const [quizRes, questionsRes] = await Promise.all([
                 api.get(`/ems/quizzes/${quizId}`),
-                api.get(`/ems/quizzes/${quizId}/questions`)
+                api.get(`/ems/quizzes/${quizId}/questions`),
             ]);
 
             if (quizRes.data.success) setQuiz(quizRes.data.data);
@@ -94,157 +93,234 @@ export default function QuizViewPage() {
     return (
         <div className="min-h-screen bg-gray-50 pb-24">
             <AcademicManagerLayout>
-
-            <div className="max-w-4xl mx-auto px-4 py-8">
-                {/* Header Section */}
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-                    <div>
-                        <Link href="/ems/academic-manager/quizzes">
-                            <Button variant="ghost" size="sm" className="mb-2 -ml-2 text-gray-600 hover:text-purple-600">
-                                <ArrowLeft className="h-4 w-4 mr-2" />
-                                Back to All Quizzes
+                <div className="max-w-4xl mx-auto px-4 py-8">
+                    {/* Header Section */}
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                        <div>
+                            <Link href="/ems/academic-manager/quizzes">
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="mb-2 -ml-2 text-gray-600 hover:text-purple-600"
+                                >
+                                    <ArrowLeft className="h-4 w-4 mr-2" />
+                                    Back to All Quizzes
+                                </Button>
+                            </Link>
+                            <h1 className="text-3xl font-bold text-gray-900">
+                                {quiz?.quiz_title}
+                            </h1>
+                            <p className="text-gray-500 mt-1">
+                                {quiz?.courses?.course_name} (
+                                {quiz?.courses?.course_code})
+                            </p>
+                        </div>
+                        <Link
+                            href={`/ems/academic-manager/quizzes/builder?id=${quizId}`}
+                        >
+                            <Button className="bg-purple-600 hover:bg-purple-700 shadow-lg shadow-purple-200">
+                                <Edit3 className="h-4 w-4 mr-2" />
+                                Edit Questions
                             </Button>
                         </Link>
-                        <h1 className="text-3xl font-bold text-gray-900">{quiz?.quiz_title}</h1>
-                        <p className="text-gray-500 mt-1">{quiz?.courses?.course_name} ({quiz?.courses?.course_code})</p>
-                    </div>
-                    <Link href={`/ems/academic-manager/quizzes/builder?id=${quizId}`}>
-                        <Button className="bg-purple-600 hover:bg-purple-700 shadow-lg shadow-purple-200">
-                            <Edit3 className="h-4 w-4 mr-2" />
-                            Edit Questions
-                        </Button>
-                    </Link>
-                </div>
-
-                {/* Quick Stats Grid */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                    {[
-                        { icon: HelpCircle, label: "Questions", value: questions.length, color: "text-blue-600", bg: "bg-blue-50" },
-                        { icon: Target, label: "Total Marks", value: quiz?.total_marks, color: "text-purple-600", bg: "bg-purple-50" },
-                        { icon: Clock, label: "Duration", value: `${quiz?.duration_minutes}m`, color: "text-orange-600", bg: "bg-orange-50" },
-                        { icon: ClipboardCheck, label: "Pass Mark", value: quiz?.passing_marks, color: "text-green-600", bg: "bg-green-50" },
-                    ].map((stat, i) => (
-                        <Card key={i} className="border-0 shadow-sm overflow-hidden">
-                            <CardContent className="p-4 flex items-center gap-3">
-                                <div className={`p-2 rounded-lg ${stat.bg}`}>
-                                    <stat.icon className={`h-5 w-5 ${stat.color}`} />
-                                </div>
-                                <div>
-                                    <p className="text-xs text-gray-500 font-medium uppercase tracking-wider">{stat.label}</p>
-                                    <p className={`text-lg font-bold ${stat.color}`}>{stat.value}</p>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    ))}
-                </div>
-
-                {/* Questions Preview */}
-                <div className="space-y-6">
-                    <div className="flex items-center justify-between mb-2 px-1">
-                        <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-                            <ClipboardCheck className="h-5 w-5 text-purple-600" />
-                            Question Bank
-                        </h2>
-                        <span className="text-sm font-medium text-gray-500 bg-gray-100 px-3 py-1 rounded-full text-xs">
-                            Review Mode
-                        </span>
                     </div>
 
-                    {questions.length === 0 ? (
-                        <Card className="border-dashed border-2 bg-gray-50/50">
-                            <CardContent className="p-12 text-center">
-                                <p className="text-gray-400">No questions added to this quiz yet.</p>
-                                <Link href={`/ems/academic-manager/quizzes/builder?id=${quizId}`}>
-                                    <Button variant="link" className="text-purple-600 mt-2">
-                                        Open Builder to add questions
-                                    </Button>
-                                </Link>
-                            </CardContent>
-                        </Card>
-                    ) : (
-                        questions.map((question, index) => (
-                            <motion.div
-                                key={question.id}
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: index * 0.05 }}
+                    {/* Quick Stats Grid */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                        {[
+                            {
+                                icon: HelpCircle,
+                                label: "Questions",
+                                value: questions.length,
+                                color: "text-blue-600",
+                                bg: "bg-blue-50",
+                            },
+                            {
+                                icon: Target,
+                                label: "Total Marks",
+                                value: quiz?.total_marks,
+                                color: "text-purple-600",
+                                bg: "bg-purple-50",
+                            },
+                            {
+                                icon: Clock,
+                                label: "Duration",
+                                value: `${quiz?.duration_minutes}m`,
+                                color: "text-orange-600",
+                                bg: "bg-orange-50",
+                            },
+                            {
+                                icon: ClipboardCheck,
+                                label: "Pass Mark",
+                                value: quiz?.passing_marks,
+                                color: "text-green-600",
+                                bg: "bg-green-50",
+                            },
+                        ].map((stat, i) => (
+                            <Card
+                                key={i}
+                                className="border-0 shadow-sm overflow-hidden"
                             >
-                                <Card className="border-0 shadow-md hover:shadow-lg transition-shadow overflow-hidden group">
-                                    <CardContent className="p-0">
-                                        {/* Question Header */}
-                                        <div className="p-5 border-b border-gray-100 bg-white">
-                                            <div className="flex justify-between items-start mb-3">
-                                                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-purple-600 text-white font-bold text-sm">
-                                                    {index + 1}
-                                                </span>
-                                                <span className="text-xs font-bold text-purple-600 uppercase tracking-widest bg-purple-50 px-2 py-1 rounded">
-                                                    {question.marks} {question.marks === 1 ? 'Mark' : 'Marks'}
-                                                </span>
-                                            </div>
-                                            <h3 className="text-lg font-semibold text-gray-900 leading-relaxed">
-                                                {question.question_text}
-                                            </h3>
-                                        </div>
+                                <CardContent className="p-4 flex items-center gap-3">
+                                    <div
+                                        className={`p-2 rounded-lg ${stat.bg}`}
+                                    >
+                                        <stat.icon
+                                            className={`h-5 w-5 ${stat.color}`}
+                                        />
+                                    </div>
+                                    <div>
+                                        <p className="text-xs text-gray-500 font-medium uppercase tracking-wider">
+                                            {stat.label}
+                                        </p>
+                                        <p
+                                            className={`text-lg font-bold ${stat.color}`}
+                                        >
+                                            {stat.value}
+                                        </p>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        ))}
+                    </div>
 
-                                        {/* Options Grid */}
-                                        <div className="p-5 bg-gray-50/30">
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                                {question.quiz_options.map((option, optIdx) => (
-                                                    <div
-                                                        key={option.id}
-                                                        className={`flex items-center p-4 rounded-xl border-2 transition-all ${option.is_correct
-                                                                ? "border-green-500 bg-green-50/50"
-                                                                : "border-gray-100 bg-white"
-                                                            }`}
-                                                    >
-                                                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center mr-3 font-bold text-sm ${option.is_correct ? "bg-green-500 text-white" : "bg-gray-100 text-gray-400"
-                                                            }`}>
-                                                            {String.fromCharCode(65 + optIdx)}
-                                                        </div>
-                                                        <span className={`flex-1 font-medium ${option.is_correct ? "text-green-900" : "text-gray-700"}`}>
-                                                            {option.option_text}
-                                                        </span>
-                                                        {option.is_correct && (
-                                                            <CheckCircle2 className="h-5 w-5 text-green-500 ml-2" />
-                                                        )}
-                                                    </div>
-                                                ))}
-                                            </div>
-
-                                            {/* Explanation Section */}
-                                            {question.explanation && (
-                                                <div className="mt-5 p-4 bg-blue-50/50 border border-blue-100 rounded-xl flex gap-3">
-                                                    <div className="mt-1">
-                                                        <Info className="h-4 w-4 text-blue-500" />
-                                                    </div>
-                                                    <div>
-                                                        <p className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-1">Teacher's Explanation</p>
-                                                        <p className="text-sm text-blue-800 leading-relaxed italic">
-                                                            "{question.explanation}"
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            </motion.div>
-                        ))
-                    )}
-
-                    {/* Footer Info */}
-                    <div className="py-12 border-t border-gray-200 text-center">
-                        <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gray-100 mb-4">
-                            <ClipboardCheck className="h-6 w-6 text-gray-400" />
+                    {/* Questions Preview */}
+                    <div className="space-y-6">
+                        <div className="flex items-center justify-between mb-2 px-1">
+                            <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                                <ClipboardCheck className="h-5 w-5 text-purple-600" />
+                                Question Bank
+                            </h2>
+                            <span className="text-sm font-medium text-gray-500 bg-gray-100 px-3 py-1 rounded-full text-xs">
+                                Review Mode
+                            </span>
                         </div>
-                        <h4 className="text-gray-900 font-bold">End of Quiz Preview</h4>
-                        <p className="text-sm text-gray-500 mt-2">To change any questions, use the Edit Builder at the top.</p>
+
+                        {questions.length === 0 ? (
+                            <Card className="border-dashed border-2 bg-gray-50/50">
+                                <CardContent className="p-12 text-center">
+                                    <p className="text-gray-400">
+                                        No questions added to this quiz yet.
+                                    </p>
+                                    <Link
+                                        href={`/ems/academic-manager/quizzes/builder?id=${quizId}`}
+                                    >
+                                        <Button
+                                            variant="link"
+                                            className="text-purple-600 mt-2"
+                                        >
+                                            Open Builder to add questions
+                                        </Button>
+                                    </Link>
+                                </CardContent>
+                            </Card>
+                        ) : (
+                            questions.map((question, index) => (
+                                <div key={question.id}>
+                                    <Card className="border-0 shadow-md hover:shadow-lg transition-shadow overflow-hidden group">
+                                        <CardContent className="p-0">
+                                            {/* Question Header */}
+                                            <div className="p-5 border-b border-gray-100 bg-white">
+                                                <div className="flex justify-between items-start mb-3">
+                                                    <span className="flex items-center justify-center w-8 h-8 rounded-full bg-purple-600 text-white font-bold text-sm">
+                                                        {index + 1}
+                                                    </span>
+                                                    <span className="text-xs font-bold text-purple-600 uppercase tracking-widest bg-purple-50 px-2 py-1 rounded">
+                                                        {question.marks}{" "}
+                                                        {question.marks === 1
+                                                            ? "Mark"
+                                                            : "Marks"}
+                                                    </span>
+                                                </div>
+                                                <h3 className="text-lg font-semibold text-gray-900 leading-relaxed">
+                                                    {question.question_text}
+                                                </h3>
+                                            </div>
+
+                                            {/* Options Grid */}
+                                            <div className="p-5 bg-gray-50/30">
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                                    {question.quiz_options.map(
+                                                        (option, optIdx) => (
+                                                            <div
+                                                                key={option.id}
+                                                                className={`flex items-center p-4 rounded-xl border-2 transition-all ${
+                                                                    option.is_correct
+                                                                        ? "border-green-500 bg-green-50/50"
+                                                                        : "border-gray-100 bg-white"
+                                                                }`}
+                                                            >
+                                                                <div
+                                                                    className={`w-8 h-8 rounded-lg flex items-center justify-center mr-3 font-bold text-sm ${
+                                                                        option.is_correct
+                                                                            ? "bg-green-500 text-white"
+                                                                            : "bg-gray-100 text-gray-400"
+                                                                    }`}
+                                                                >
+                                                                    {String.fromCharCode(
+                                                                        65 +
+                                                                            optIdx,
+                                                                    )}
+                                                                </div>
+                                                                <span
+                                                                    className={`flex-1 font-medium ${option.is_correct ? "text-green-900" : "text-gray-700"}`}
+                                                                >
+                                                                    {
+                                                                        option.option_text
+                                                                    }
+                                                                </span>
+                                                                {option.is_correct && (
+                                                                    <CheckCircle2 className="h-5 w-5 text-green-500 ml-2" />
+                                                                )}
+                                                            </div>
+                                                        ),
+                                                    )}
+                                                </div>
+
+                                                {/* Explanation Section */}
+                                                {question.explanation && (
+                                                    <div className="mt-5 p-4 bg-blue-50/50 border border-blue-100 rounded-xl flex gap-3">
+                                                        <div className="mt-1">
+                                                            <Info className="h-4 w-4 text-blue-500" />
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-1">
+                                                                Teacher's
+                                                                Explanation
+                                                            </p>
+                                                            <p className="text-sm text-blue-800 leading-relaxed italic">
+                                                                "
+                                                                {
+                                                                    question.explanation
+                                                                }
+                                                                "
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+                                </div>
+                            ))
+                        )}
+
+                        {/* Footer Info */}
+                        <div className="py-12 border-t border-gray-200 text-center">
+                            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gray-100 mb-4">
+                                <ClipboardCheck className="h-6 w-6 text-gray-400" />
+                            </div>
+                            <h4 className="text-gray-900 font-bold">
+                                End of Quiz Preview
+                            </h4>
+                            <p className="text-sm text-gray-500 mt-2">
+                                To change any questions, use the Edit Builder at
+                                the top.
+                            </p>
+                        </div>
                     </div>
                 </div>
-            </div>
-
             </AcademicManagerLayout>
         </div>
     );
 }
-

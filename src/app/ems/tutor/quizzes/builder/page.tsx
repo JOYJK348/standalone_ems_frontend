@@ -20,7 +20,6 @@ import {
     GripVertical,
 } from "lucide-react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
 import api from "@/lib/api";
 
 interface QuizOption {
@@ -75,17 +74,21 @@ export default function QuizBuilderPage() {
             }
 
             // Fetch questions separately
-            const questionsResponse = await api.get(`/ems/quizzes/${quizId}/questions`);
+            const questionsResponse = await api.get(
+                `/ems/quizzes/${quizId}/questions`,
+            );
             if (questionsResponse.data.success && questionsResponse.data.data) {
-                const fetchedQuestions = questionsResponse.data.data.map((q: any) => ({
-                    id: q.id,
-                    question_text: q.question_text,
-                    question_type: q.question_type,
-                    marks: q.marks,
-                    question_order: q.question_order,
-                    explanation: q.explanation || "",
-                    options: q.quiz_options || []
-                }));
+                const fetchedQuestions = questionsResponse.data.data.map(
+                    (q: any) => ({
+                        id: q.id,
+                        question_text: q.question_text,
+                        question_type: q.question_type,
+                        marks: q.marks,
+                        question_order: q.question_order,
+                        explanation: q.explanation || "",
+                        options: q.quiz_options || [],
+                    }),
+                );
                 setQuestions(fetchedQuestions);
             }
         } catch (error) {
@@ -142,7 +145,7 @@ export default function QuizBuilderPage() {
         questionIndex: number,
         optionIndex: number,
         field: string,
-        value: any
+        value: any,
     ) => {
         const updated = [...questions];
         (updated[questionIndex].options[optionIndex] as any)[field] = value;
@@ -161,7 +164,7 @@ export default function QuizBuilderPage() {
     const deleteOption = (questionIndex: number, optionIndex: number) => {
         const updated = [...questions];
         updated[questionIndex].options = updated[questionIndex].options.filter(
-            (_, i) => i !== optionIndex
+            (_, i) => i !== optionIndex,
         );
         updated[questionIndex].options.forEach((opt, i) => {
             opt.option_order = i + 1;
@@ -172,9 +175,12 @@ export default function QuizBuilderPage() {
     const saveQuiz = async () => {
         try {
             setSaving(true);
-            const response = await api.post(`/ems/quizzes/${quizId}/questions`, {
-                questions,
-            });
+            const response = await api.post(
+                `/ems/quizzes/${quizId}/questions`,
+                {
+                    questions,
+                },
+            );
 
             if (response.data.success) {
                 alert("Quiz saved successfully!");
@@ -221,7 +227,9 @@ export default function QuizBuilderPage() {
                         <div className="flex gap-2">
                             <Button
                                 variant="outline"
-                                onClick={() => router.push(`/ems/tutor/quizzes/${quizId}`)}
+                                onClick={() =>
+                                    router.push(`/ems/tutor/quizzes/${quizId}`)
+                                }
                             >
                                 <Eye className="h-4 w-4 mr-2" />
                                 Preview
@@ -266,68 +274,69 @@ export default function QuizBuilderPage() {
 
                 {/* Questions List */}
                 <div className="space-y-6">
-                    <AnimatePresence>
-                        {questions.map((question, qIndex) => (
-                            <motion.div
-                                key={qIndex}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -20 }}
-                            >
-                                <Card className="border-0 shadow-lg">
-                                    <CardContent className="p-6">
-                                        <div className="flex items-start gap-4 mb-4">
-                                            <div className="flex items-center gap-2">
-                                                <GripVertical className="h-5 w-5 text-gray-400 cursor-move" />
-                                                <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-                                                    <span className="text-blue-600 font-bold">
-                                                        {qIndex + 1}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div className="flex-1">
-                                                <Textarea
-                                                    placeholder="Enter your question here..."
-                                                    value={question.question_text}
-                                                    onChange={(e) =>
-                                                        updateQuestion(
-                                                            qIndex,
-                                                            "question_text",
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                    className="text-lg font-medium border-0 border-b-2 border-gray-200 focus:border-blue-500 rounded-none px-0 resize-none"
-                                                    rows={2}
-                                                />
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <Input
-                                                    type="number"
-                                                    min="1"
-                                                    value={question.marks}
-                                                    onChange={(e) =>
-                                                        updateQuestion(
-                                                            qIndex,
-                                                            "marks",
-                                                            parseInt(e.target.value)
-                                                        )
-                                                    }
-                                                    className="w-20 text-center"
-                                                />
-                                                <span className="text-sm text-gray-600">marks</span>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    onClick={() => deleteQuestion(qIndex)}
-                                                    className="text-red-600 hover:text-red-700"
-                                                >
-                                                    <Trash2 className="h-4 w-4" />
-                                                </Button>
+                    {questions.map((question, qIndex) => (
+                        <div key={qIndex}>
+                            <Card className="border-0 shadow-lg">
+                                <CardContent className="p-6">
+                                    <div className="flex items-start gap-4 mb-4">
+                                        <div className="flex items-center gap-2">
+                                            <GripVertical className="h-5 w-5 text-gray-400 cursor-move" />
+                                            <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                                                <span className="text-blue-600 font-bold">
+                                                    {qIndex + 1}
+                                                </span>
                                             </div>
                                         </div>
+                                        <div className="flex-1">
+                                            <Textarea
+                                                placeholder="Enter your question here..."
+                                                value={question.question_text}
+                                                onChange={(e) =>
+                                                    updateQuestion(
+                                                        qIndex,
+                                                        "question_text",
+                                                        e.target.value,
+                                                    )
+                                                }
+                                                className="text-lg font-medium border-0 border-b-2 border-gray-200 focus:border-blue-500 rounded-none px-0 resize-none"
+                                                rows={2}
+                                            />
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <Input
+                                                type="number"
+                                                min="1"
+                                                value={question.marks}
+                                                onChange={(e) =>
+                                                    updateQuestion(
+                                                        qIndex,
+                                                        "marks",
+                                                        parseInt(
+                                                            e.target.value,
+                                                        ),
+                                                    )
+                                                }
+                                                className="w-20 text-center"
+                                            />
+                                            <span className="text-sm text-gray-600">
+                                                marks
+                                            </span>
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                onClick={() =>
+                                                    deleteQuestion(qIndex)
+                                                }
+                                                className="text-red-600 hover:text-red-700"
+                                            >
+                                                <Trash2 className="h-4 w-4" />
+                                            </Button>
+                                        </div>
+                                    </div>
 
-                                        <div className="ml-16 space-y-3">
-                                            {question.options.map((option, oIndex) => (
+                                    <div className="ml-16 space-y-3">
+                                        {question.options.map(
+                                            (option, oIndex) => (
                                                 <div
                                                     key={oIndex}
                                                     className="flex items-center gap-3 group"
@@ -339,40 +348,50 @@ export default function QuizBuilderPage() {
                                                                 qIndex,
                                                                 oIndex,
                                                                 "is_correct",
-                                                                !option.is_correct
+                                                                !option.is_correct,
                                                             )
                                                         }
-                                                        className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${option.is_correct
-                                                            ? "bg-green-500 border-green-500"
-                                                            : "border-gray-300 hover:border-green-400"
-                                                            }`}
+                                                        className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
+                                                            option.is_correct
+                                                                ? "bg-green-500 border-green-500"
+                                                                : "border-gray-300 hover:border-green-400"
+                                                        }`}
                                                     >
                                                         {option.is_correct && (
                                                             <Check className="h-4 w-4 text-white" />
                                                         )}
                                                     </button>
                                                     <span className="text-gray-600 font-medium w-6">
-                                                        {String.fromCharCode(65 + oIndex)}.
+                                                        {String.fromCharCode(
+                                                            65 + oIndex,
+                                                        )}
+                                                        .
                                                     </span>
                                                     <Input
                                                         placeholder={`Option ${oIndex + 1}`}
-                                                        value={option.option_text}
+                                                        value={
+                                                            option.option_text
+                                                        }
                                                         onChange={(e) =>
                                                             updateOption(
                                                                 qIndex,
                                                                 oIndex,
                                                                 "option_text",
-                                                                e.target.value
+                                                                e.target.value,
                                                             )
                                                         }
                                                         className="flex-1"
                                                     />
-                                                    {question.options.length > 2 && (
+                                                    {question.options.length >
+                                                        2 && (
                                                         <Button
                                                             variant="ghost"
                                                             size="icon"
                                                             onClick={() =>
-                                                                deleteOption(qIndex, oIndex)
+                                                                deleteOption(
+                                                                    qIndex,
+                                                                    oIndex,
+                                                                )
                                                             }
                                                             className="opacity-0 group-hover:opacity-100 transition-opacity"
                                                         >
@@ -380,42 +399,42 @@ export default function QuizBuilderPage() {
                                                         </Button>
                                                     )}
                                                 </div>
-                                            ))}
+                                            ),
+                                        )}
 
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                onClick={() => addOption(qIndex)}
-                                                className="ml-9"
-                                            >
-                                                <Plus className="h-4 w-4 mr-2" />
-                                                Add Option
-                                            </Button>
-                                        </div>
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() => addOption(qIndex)}
+                                            className="ml-9"
+                                        >
+                                            <Plus className="h-4 w-4 mr-2" />
+                                            Add Option
+                                        </Button>
+                                    </div>
 
-                                        <div className="ml-16 mt-4">
-                                            <Label className="text-sm text-gray-600">
-                                                Explanation (Optional)
-                                            </Label>
-                                            <Textarea
-                                                placeholder="Explain the correct answer..."
-                                                value={question.explanation || ""}
-                                                onChange={(e) =>
-                                                    updateQuestion(
-                                                        qIndex,
-                                                        "explanation",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                className="mt-1"
-                                                rows={2}
-                                            />
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            </motion.div>
-                        ))}
-                    </AnimatePresence>
+                                    <div className="ml-16 mt-4">
+                                        <Label className="text-sm text-gray-600">
+                                            Explanation (Optional)
+                                        </Label>
+                                        <Textarea
+                                            placeholder="Explain the correct answer..."
+                                            value={question.explanation || ""}
+                                            onChange={(e) =>
+                                                updateQuestion(
+                                                    qIndex,
+                                                    "explanation",
+                                                    e.target.value,
+                                                )
+                                            }
+                                            className="mt-1"
+                                            rows={2}
+                                        />
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </div>
+                    ))}
 
                     <Button
                         onClick={addQuestion}

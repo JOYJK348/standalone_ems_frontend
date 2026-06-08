@@ -18,7 +18,6 @@ import {
     Calendar,
 } from "lucide-react";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import api from "@/lib/api";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
@@ -32,7 +31,7 @@ interface Course {
     total_lessons: number;
     thumbnail_url: string;
     is_published: boolean;
-    approval_status: 'PENDING' | 'APPROVED' | 'REJECTED';
+    approval_status: "PENDING" | "APPROVED" | "REJECTED";
     rejection_reason?: string;
     enrollment_count?: number;
 }
@@ -52,19 +51,26 @@ export default function TutorCoursesPage() {
             const response = await api.get("/ems/courses");
             if (response.data.success) {
                 const raw = response.data.data || [];
-                setCourses(Array.isArray(raw) ? raw : (raw.courses || []));
+                setCourses(Array.isArray(raw) ? raw : raw.courses || []);
             }
         } catch (error: any) {
             console.error("Error fetching courses:", error);
-            toast.error(error.response?.data?.message || "Failed to load courses");
+            toast.error(
+                error.response?.data?.message || "Failed to load courses",
+            );
         } finally {
             setLoading(false);
         }
     };
 
-    const filteredCourses = courses.filter((course) =>
-        course.course_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        course.course_code.toLowerCase().includes(searchQuery.toLowerCase())
+    const filteredCourses = courses.filter(
+        (course) =>
+            course.course_name
+                .toLowerCase()
+                .includes(searchQuery.toLowerCase()) ||
+            course.course_code
+                .toLowerCase()
+                .includes(searchQuery.toLowerCase()),
     );
 
     return (
@@ -77,7 +83,9 @@ export default function TutorCoursesPage() {
                     <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
                         Assigned Courses
                     </h1>
-                    <p className="text-gray-600 mt-1">Manage your curriculum and lesson plans</p>
+                    <p className="text-gray-600 mt-1">
+                        Manage your curriculum and lesson plans
+                    </p>
                 </div>
 
                 {/* Search & Filter */}
@@ -100,23 +108,25 @@ export default function TutorCoursesPage() {
                 {loading ? (
                     <div className="flex flex-col items-center justify-center py-20">
                         <Loader2 className="h-10 w-10 animate-spin text-blue-600 mb-4" />
-                        <p className="text-gray-500 font-medium">Fetching courses...</p>
+                        <p className="text-gray-500 font-medium">
+                            Fetching courses...
+                        </p>
                     </div>
                 ) : filteredCourses.length === 0 ? (
                     <Card className="border-0 shadow-lg p-12 text-center">
                         <BookOpen className="h-16 w-16 text-blue-200 mx-auto mb-4" />
-                        <h3 className="text-xl font-bold text-gray-900 mb-2">No Courses Assigned</h3>
-                        <p className="text-gray-600">Contact your academic manager to assign courses to you.</p>
+                        <h3 className="text-xl font-bold text-gray-900 mb-2">
+                            No Courses Assigned
+                        </h3>
+                        <p className="text-gray-600">
+                            Contact your academic manager to assign courses to
+                            you.
+                        </p>
                     </Card>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {filteredCourses.map((course, index) => (
-                            <motion.div
-                                key={course.id}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: index * 0.1 }}
-                            >
+                            <div key={course.id}>
                                 <Card className="border-0 shadow-lg hover:shadow-xl transition-all overflow-hidden group h-full flex flex-col">
                                     <div className="relative h-48 bg-blue-100 overflow-hidden">
                                         {course.thumbnail_url ? (
@@ -131,21 +141,40 @@ export default function TutorCoursesPage() {
                                             </div>
                                         )}
                                         <div className="absolute top-4 right-4 capitalize">
-                                            <span className={`px-3 py-1 rounded-full text-xs font-bold ${course.is_published ? "bg-green-500 text-white" : "bg-orange-500 text-white"
-                                                }`}>
-                                                {course.is_published ? "Published" : "Draft"}
+                                            <span
+                                                className={`px-3 py-1 rounded-full text-xs font-bold ${
+                                                    course.is_published
+                                                        ? "bg-green-500 text-white"
+                                                        : "bg-orange-500 text-white"
+                                                }`}
+                                            >
+                                                {course.is_published
+                                                    ? "Published"
+                                                    : "Draft"}
                                             </span>
                                         </div>
                                         <div className="absolute top-4 left-4 flex flex-col gap-2">
                                             <span className="bg-white/90 backdrop-blur-sm px-2 py-1 rounded-md text-[10px] font-bold text-blue-800 uppercase tracking-wider">
                                                 {course.course_code}
                                             </span>
-                                            <Badge className={`rounded-md uppercase text-[10px] font-black tracking-tight ${course.approval_status === 'APPROVED' ? 'bg-emerald-500 hover:bg-emerald-600' :
-                                                    course.approval_status === 'REJECTED' ? 'bg-rose-500 hover:bg-rose-600' :
-                                                        'bg-amber-500 hover:bg-amber-600'
-                                                }`}>
-                                                {course.approval_status === 'REJECTED' ? 'REJECTED' :
-                                                    course.approval_status === 'APPROVED' ? 'APPROVED' : 'PENDING REVIEW'}
+                                            <Badge
+                                                className={`rounded-md uppercase text-[10px] font-black tracking-tight ${
+                                                    course.approval_status ===
+                                                    "APPROVED"
+                                                        ? "bg-emerald-500 hover:bg-emerald-600"
+                                                        : course.approval_status ===
+                                                            "REJECTED"
+                                                          ? "bg-rose-500 hover:bg-rose-600"
+                                                          : "bg-amber-500 hover:bg-amber-600"
+                                                }`}
+                                            >
+                                                {course.approval_status ===
+                                                "REJECTED"
+                                                    ? "REJECTED"
+                                                    : course.approval_status ===
+                                                        "APPROVED"
+                                                      ? "APPROVED"
+                                                      : "PENDING REVIEW"}
                                             </Badge>
                                         </div>
                                     </div>
@@ -155,18 +184,25 @@ export default function TutorCoursesPage() {
                                             {course.course_name}
                                         </h3>
 
-                                        {course.approval_status === 'REJECTED' && course.rejection_reason && (
-                                            <div className="mb-4 p-3 bg-rose-50 border border-rose-100 rounded-xl flex items-start gap-2">
-                                                <AlertCircle className="h-4 w-4 text-rose-500 shrink-0 mt-0.5" />
-                                                <p className="text-xs text-rose-700 font-medium">
-                                                    <span className="font-bold uppercase tracking-tighter mr-1 text-[9px]">Feedback:</span>
-                                                    {course.rejection_reason}
-                                                </p>
-                                            </div>
-                                        )}
+                                        {course.approval_status ===
+                                            "REJECTED" &&
+                                            course.rejection_reason && (
+                                                <div className="mb-4 p-3 bg-rose-50 border border-rose-100 rounded-xl flex items-start gap-2">
+                                                    <AlertCircle className="h-4 w-4 text-rose-500 shrink-0 mt-0.5" />
+                                                    <p className="text-xs text-rose-700 font-medium">
+                                                        <span className="font-bold uppercase tracking-tighter mr-1 text-[9px]">
+                                                            Feedback:
+                                                        </span>
+                                                        {
+                                                            course.rejection_reason
+                                                        }
+                                                    </p>
+                                                </div>
+                                            )}
 
                                         <p className="text-sm text-gray-600 mb-6 line-clamp-2">
-                                            {course.course_description || "No description available for this course."}
+                                            {course.course_description ||
+                                                "No description available for this course."}
                                         </p>
 
                                         <div className="grid grid-cols-2 gap-4 mb-6">
@@ -175,8 +211,12 @@ export default function TutorCoursesPage() {
                                                     <BookText className="h-4 w-4 text-blue-600" />
                                                 </div>
                                                 <div>
-                                                    <p className="text-[10px] text-gray-500 uppercase font-bold">Lessons</p>
-                                                    <p className="text-sm font-bold">{course.total_lessons}</p>
+                                                    <p className="text-[10px] text-gray-500 uppercase font-bold">
+                                                        Lessons
+                                                    </p>
+                                                    <p className="text-sm font-bold">
+                                                        {course.total_lessons}
+                                                    </p>
                                                 </div>
                                             </div>
                                             <div className="flex items-center gap-2">
@@ -184,14 +224,21 @@ export default function TutorCoursesPage() {
                                                     <Users className="h-4 w-4 text-green-600" />
                                                 </div>
                                                 <div>
-                                                    <p className="text-[10px] text-gray-500 uppercase font-bold">Students</p>
-                                                    <p className="text-sm font-bold">{course.enrollment_count || 0}</p>
+                                                    <p className="text-[10px] text-gray-500 uppercase font-bold">
+                                                        Students
+                                                    </p>
+                                                    <p className="text-sm font-bold">
+                                                        {course.enrollment_count ||
+                                                            0}
+                                                    </p>
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div className="mt-auto">
-                                            <Link href={`/ems/tutor/courses/${course.id}`}>
+                                            <Link
+                                                href={`/ems/tutor/courses/${course.id}`}
+                                            >
                                                 <Button className="w-full bg-blue-600 hover:bg-blue-700">
                                                     <Eye className="h-4 w-4 mr-2" />
                                                     Manage Course
@@ -200,7 +247,7 @@ export default function TutorCoursesPage() {
                                         </div>
                                     </CardContent>
                                 </Card>
-                            </motion.div>
+                            </div>
                         ))}
                     </div>
                 )}

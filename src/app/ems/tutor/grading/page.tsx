@@ -19,7 +19,6 @@ import {
     Calendar,
 } from "lucide-react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
 import api from "@/lib/api";
 import { toast } from "sonner";
 
@@ -57,21 +56,30 @@ export default function TutorGradingPage() {
     const fetchSubmissions = async () => {
         try {
             setLoading(true);
-            const response = await api.get(`/ems/tutor/submissions?status=${statusFilter}`);
+            const response = await api.get(
+                `/ems/tutor/submissions?status=${statusFilter}`,
+            );
             if (response.data.success) {
                 setSubmissions(response.data.data || []);
             }
         } catch (error: any) {
             console.error("Error fetching submissions:", error);
-            toast.error(error.response?.data?.message || "Failed to load submissions");
+            toast.error(
+                error.response?.data?.message || "Failed to load submissions",
+            );
         } finally {
             setLoading(false);
         }
     };
 
-    const filteredSubmissions = submissions.filter((s) =>
-        `${s.students.first_name} ${s.students.last_name}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        s.assignments.assignment_title.toLowerCase().includes(searchQuery.toLowerCase())
+    const filteredSubmissions = submissions.filter(
+        (s) =>
+            `${s.students.first_name} ${s.students.last_name}`
+                .toLowerCase()
+                .includes(searchQuery.toLowerCase()) ||
+            s.assignments.assignment_title
+                .toLowerCase()
+                .includes(searchQuery.toLowerCase()),
     );
 
     return (
@@ -84,7 +92,9 @@ export default function TutorGradingPage() {
                     <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
                         Grading Hub
                     </h1>
-                    <p className="text-gray-600 mt-1">Evaluate student submissions and provide feedback</p>
+                    <p className="text-gray-600 mt-1">
+                        Evaluate student submissions and provide feedback
+                    </p>
                 </div>
 
                 {/* Filters */}
@@ -98,7 +108,9 @@ export default function TutorGradingPage() {
                                     placeholder="Search by student or assignment..."
                                     className="pl-10 border-0 focus-visible:ring-0 shadow-none h-10"
                                     value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    onChange={(e) =>
+                                        setSearchQuery(e.target.value)
+                                    }
                                 />
                             </div>
                         </CardContent>
@@ -108,11 +120,18 @@ export default function TutorGradingPage() {
                         {["SUBMITTED", "GRADED"].map((status) => (
                             <Button
                                 key={status}
-                                variant={statusFilter === status ? "default" : "outline"}
-                                className={statusFilter === status ? "bg-blue-600" : ""}
+                                variant={
+                                    statusFilter === status
+                                        ? "default"
+                                        : "outline"
+                                }
+                                className={
+                                    statusFilter === status ? "bg-blue-600" : ""
+                                }
                                 onClick={() => setStatusFilter(status)}
                             >
-                                {status.charAt(0) + status.slice(1).toLowerCase()}
+                                {status.charAt(0) +
+                                    status.slice(1).toLowerCase()}
                             </Button>
                         ))}
                     </div>
@@ -127,77 +146,113 @@ export default function TutorGradingPage() {
                 ) : filteredSubmissions.length === 0 ? (
                     <Card className="border-0 shadow-lg p-12 text-center">
                         <CheckSquare className="h-16 w-16 text-green-200 mx-auto mb-4" />
-                        <h3 className="text-xl font-bold text-gray-900 mb-2">No Submissions Found</h3>
-                        <p className="text-gray-600">Great job! You've graded everything for now.</p>
+                        <h3 className="text-xl font-bold text-gray-900 mb-2">
+                            No Submissions Found
+                        </h3>
+                        <p className="text-gray-600">
+                            Great job! You've graded everything for now.
+                        </p>
                     </Card>
                 ) : (
                     <div className="space-y-4">
-                        <AnimatePresence mode="popLayout">
-                            {filteredSubmissions.map((submission, index) => (
-                                <motion.div
-                                    key={submission.id}
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: index * 0.05 }}
-                                >
-                                    <Card className="border-0 shadow-md hover:shadow-lg transition-all overflow-hidden border-l-4 border-l-blue-500">
-                                        <CardContent className="p-0">
-                                            <div className="flex flex-col md:flex-row md:items-center p-6 gap-6">
-                                                {/* Student Info */}
-                                                <div className="flex items-center gap-4 min-w-[200px]">
-                                                    <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">
-                                                        {submission.students.first_name.charAt(0)}
-                                                        {submission.students.last_name.charAt(0)}
-                                                    </div>
-                                                    <div>
-                                                        <h3 className="font-bold text-gray-900">
-                                                            {submission.students.first_name} {submission.students.last_name}
-                                                        </h3>
-                                                        <p className="text-xs text-gray-500">{submission.students.student_code}</p>
-                                                    </div>
+                        {filteredSubmissions.map((submission, index) => (
+                            <div key={submission.id}>
+                                <Card className="border-0 shadow-md hover:shadow-lg transition-all overflow-hidden border-l-4 border-l-blue-500">
+                                    <CardContent className="p-0">
+                                        <div className="flex flex-col md:flex-row md:items-center p-6 gap-6">
+                                            {/* Student Info */}
+                                            <div className="flex items-center gap-4 min-w-[200px]">
+                                                <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">
+                                                    {submission.students.first_name.charAt(
+                                                        0,
+                                                    )}
+                                                    {submission.students.last_name.charAt(
+                                                        0,
+                                                    )}
                                                 </div>
-
-                                                {/* Assignment Info */}
-                                                <div className="flex-1">
-                                                    <div className="flex items-center gap-2 mb-1">
-                                                        <FileText className="h-4 w-4 text-gray-400" />
-                                                        <p className="text-sm font-semibold text-gray-800">
-                                                            {submission.assignments.assignment_title}
-                                                        </p>
-                                                    </div>
-                                                    <p className="text-xs text-blue-600 font-medium ml-6">
-                                                        {submission.assignments.courses.course_name}
+                                                <div>
+                                                    <h3 className="font-bold text-gray-900">
+                                                        {
+                                                            submission.students
+                                                                .first_name
+                                                        }{" "}
+                                                        {
+                                                            submission.students
+                                                                .last_name
+                                                        }
+                                                    </h3>
+                                                    <p className="text-xs text-gray-500">
+                                                        {
+                                                            submission.students
+                                                                .student_code
+                                                        }
                                                     </p>
                                                 </div>
+                                            </div>
 
-                                                {/* Date & Status */}
-                                                <div className="flex flex-col items-end gap-2 text-right">
-                                                    <div className="flex items-center gap-1 text-xs text-gray-500">
-                                                        <Clock className="h-3 w-3" />
-                                                        <span>Submitted: {new Date(submission.submitted_at).toLocaleDateString()}</span>
-                                                    </div>
-                                                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${submission.submission_status === 'SUBMITTED'
-                                                        ? 'bg-orange-100 text-orange-700'
-                                                        : 'bg-green-100 text-green-700'
-                                                        }`}>
-                                                        {submission.submission_status}
+                                            {/* Assignment Info */}
+                                            <div className="flex-1">
+                                                <div className="flex items-center gap-2 mb-1">
+                                                    <FileText className="h-4 w-4 text-gray-400" />
+                                                    <p className="text-sm font-semibold text-gray-800">
+                                                        {
+                                                            submission
+                                                                .assignments
+                                                                .assignment_title
+                                                        }
+                                                    </p>
+                                                </div>
+                                                <p className="text-xs text-blue-600 font-medium ml-6">
+                                                    {
+                                                        submission.assignments
+                                                            .courses.course_name
+                                                    }
+                                                </p>
+                                            </div>
+
+                                            {/* Date & Status */}
+                                            <div className="flex flex-col items-end gap-2 text-right">
+                                                <div className="flex items-center gap-1 text-xs text-gray-500">
+                                                    <Clock className="h-3 w-3" />
+                                                    <span>
+                                                        Submitted:{" "}
+                                                        {new Date(
+                                                            submission.submitted_at,
+                                                        ).toLocaleDateString()}
                                                     </span>
                                                 </div>
-
-                                                {/* Action */}
-                                                <div className="md:ml-4">
-                                                    <Link href={`/ems/tutor/grading/${submission.id}`}>
-                                                        <Button className="bg-blue-600 hover:bg-blue-700 shadow-md">
-                                                            {statusFilter === 'SUBMITTED' ? 'Evaluate' : 'View Grade'}
-                                                        </Button>
-                                                    </Link>
-                                                </div>
+                                                <span
+                                                    className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${
+                                                        submission.submission_status ===
+                                                        "SUBMITTED"
+                                                            ? "bg-orange-100 text-orange-700"
+                                                            : "bg-green-100 text-green-700"
+                                                    }`}
+                                                >
+                                                    {
+                                                        submission.submission_status
+                                                    }
+                                                </span>
                                             </div>
-                                        </CardContent>
-                                    </Card>
-                                </motion.div>
-                            ))}
-                        </AnimatePresence>
+
+                                            {/* Action */}
+                                            <div className="md:ml-4">
+                                                <Link
+                                                    href={`/ems/tutor/grading/${submission.id}`}
+                                                >
+                                                    <Button className="bg-blue-600 hover:bg-blue-700 shadow-md">
+                                                        {statusFilter ===
+                                                        "SUBMITTED"
+                                                            ? "Evaluate"
+                                                            : "View Grade"}
+                                                    </Button>
+                                                </Link>
+                                            </div>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </div>
+                        ))}
                     </div>
                 )}
             </div>

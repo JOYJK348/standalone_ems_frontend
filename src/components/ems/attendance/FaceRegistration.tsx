@@ -2,8 +2,15 @@
 
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
-import { Camera, CheckCircle2, AlertCircle, Loader2, X, RefreshCw, Zap } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import {
+    Camera,
+    CheckCircle2,
+    AlertCircle,
+    Loader2,
+    X,
+    RefreshCw,
+    Zap,
+} from "lucide-react";
 import api from "@/lib/api";
 import { toast } from "sonner";
 
@@ -18,12 +25,17 @@ interface FaceRegistrationProps {
     onClose?: () => void;
 }
 
-export const FaceRegistration = ({ onSuccess, onClose }: FaceRegistrationProps) => {
+export const FaceRegistration = ({
+    onSuccess,
+    onClose,
+}: FaceRegistrationProps) => {
     const videoRef = useRef<HTMLVideoElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
     const [stream, setStream] = useState<MediaStream | null>(null);
-    const [step, setStep] = useState<"LOADING" | "CAMERA" | "CAPTURING" | "PROCESSING" | "SUCCESS" | "ERROR">("LOADING");
+    const [step, setStep] = useState<
+        "LOADING" | "CAMERA" | "CAPTURING" | "PROCESSING" | "SUCCESS" | "ERROR"
+    >("LOADING");
     const [error, setError] = useState<string | null>(null);
     const [modelsLoaded, setModelsLoaded] = useState(false);
     const [capturedImages, setCapturedImages] = useState<string[]>([]);
@@ -33,8 +45,9 @@ export const FaceRegistration = ({ onSuccess, onClose }: FaceRegistrationProps) 
     useEffect(() => {
         const loadModels = async () => {
             try {
-                const MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model';
-                console.log('Loading face recognition models...');
+                const MODEL_URL =
+                    "https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model";
+                console.log("Loading face recognition models...");
 
                 const fa = await getFaceapi();
                 await Promise.all([
@@ -47,7 +60,9 @@ export const FaceRegistration = ({ onSuccess, onClose }: FaceRegistrationProps) 
                 console.log("✅ Models loaded");
             } catch (err) {
                 console.error("Failed to load face models:", err);
-                setError("Failed to load face recognition models. Please refresh.");
+                setError(
+                    "Failed to load face recognition models. Please refresh.",
+                );
                 setStep("ERROR");
             }
         };
@@ -59,11 +74,11 @@ export const FaceRegistration = ({ onSuccess, onClose }: FaceRegistrationProps) 
         try {
             console.log("Attempting to start camera...");
             if (stream) {
-                stream.getTracks().forEach(track => track.stop());
+                stream.getTracks().forEach((track) => track.stop());
             }
 
             const mediaStream = await navigator.mediaDevices.getUserMedia({
-                video: true // Simplified constraints for maximum compatibility
+                video: true, // Simplified constraints for maximum compatibility
             });
 
             setStream(mediaStream);
@@ -71,7 +86,9 @@ export const FaceRegistration = ({ onSuccess, onClose }: FaceRegistrationProps) 
             console.log("✅ Camera stream acquired");
         } catch (err: any) {
             console.error("Camera error:", err);
-            setError("Camera access denied or device not found. Please check browser permissions.");
+            setError(
+                "Camera access denied or device not found. Please check browser permissions.",
+            );
             setStep("ERROR");
         }
     };
@@ -114,13 +131,22 @@ export const FaceRegistration = ({ onSuccess, onClose }: FaceRegistrationProps) 
                 const video = videoRef.current;
 
                 // Strict check to prevent toNetInput error
-                if (!video || !(video instanceof HTMLVideoElement) || video.readyState < 2 || video.paused) return;
+                if (
+                    !video ||
+                    !(video instanceof HTMLVideoElement) ||
+                    video.readyState < 2 ||
+                    video.paused
+                )
+                    return;
 
                 try {
                     const fa = await getFaceapi();
                     const detection = await fa.detectSingleFace(
                         video,
-                        new fa.TinyFaceDetectorOptions({ inputSize: 160, scoreThreshold: 0.5 })
+                        new fa.TinyFaceDetectorOptions({
+                            inputSize: 160,
+                            scoreThreshold: 0.5,
+                        }),
                     );
                     setFaceDetected(!!detection);
                 } catch (e) {
@@ -137,13 +163,19 @@ export const FaceRegistration = ({ onSuccess, onClose }: FaceRegistrationProps) 
     // Cleanup
     useEffect(() => {
         return () => {
-            if (stream) stream.getTracks().forEach(t => t.stop());
+            if (stream) stream.getTracks().forEach((t) => t.stop());
         };
     }, [stream]);
 
     const captureMultipleFaces = async () => {
         const video = videoRef.current;
-        if (!video || !(video instanceof HTMLVideoElement) || !canvasRef.current || !faceDetected) return;
+        if (
+            !video ||
+            !(video instanceof HTMLVideoElement) ||
+            !canvasRef.current ||
+            !faceDetected
+        )
+            return;
 
         setStep("CAPTURING");
         const images: string[] = [];
@@ -151,28 +183,49 @@ export const FaceRegistration = ({ onSuccess, onClose }: FaceRegistrationProps) 
 
         try {
             for (let i = 0; i < 3; i++) {
-                await new Promise(r => setTimeout(r, 600));
+                await new Promise((r) => setTimeout(r, 600));
                 const fa = await getFaceapi();
-                const detection = await fa.detectSingleFace(video, new fa.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceDescriptor();
-                if (!detection) throw new Error("Face detection interrupted. Please stay still and look directly at the camera while we secure your profile.");
+                const detection = await fa
+                    .detectSingleFace(video, new fa.TinyFaceDetectorOptions())
+                    .withFaceLandmarks()
+                    .withFaceDescriptor();
+                if (!detection)
+                    throw new Error(
+                        "Face detection interrupted. Please stay still and look directly at the camera while we secure your profile.",
+                    );
                 descriptors.push(Array.from(detection.descriptor));
 
                 const canvas = canvasRef.current;
-                canvas.width = 480; canvas.height = 480;
+                canvas.width = 480;
+                canvas.height = 480;
                 const ctx = canvas.getContext("2d");
                 const size = Math.min(video.videoWidth, video.videoHeight);
                 const startX = (video.videoWidth - size) / 2;
                 const startY = (video.videoHeight - size) / 2;
-                ctx?.drawImage(video, startX, startY, size, size, 0, 0, 480, 480);
+                ctx?.drawImage(
+                    video,
+                    startX,
+                    startY,
+                    size,
+                    size,
+                    0,
+                    0,
+                    480,
+                    480,
+                );
                 images.push(canvas.toDataURL("image/jpeg", 0.6));
             }
             await registerFaceProfile(images, descriptors);
         } catch (err: any) {
-            setError(err.message); setStep("ERROR");
+            setError(err.message);
+            setStep("ERROR");
         }
     };
 
-    const registerFaceProfile = async (images: string[], descriptors: number[][]) => {
+    const registerFaceProfile = async (
+        images: string[],
+        descriptors: number[][],
+    ) => {
         setStep("PROCESSING");
         try {
             const response = await api.post("/ems/face-profile/register", {
@@ -191,8 +244,11 @@ export const FaceRegistration = ({ onSuccess, onClose }: FaceRegistrationProps) 
 
     return (
         <div className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
-            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="w-full max-w-md bg-white rounded-[2.5rem] overflow-hidden shadow-2xl relative">
-                <button onClick={onClose} className="absolute top-6 right-6 z-10 p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors">
+            <div className="w-full max-w-md bg-white rounded-[2.5rem] overflow-hidden shadow-2xl relative">
+                <button
+                    onClick={onClose}
+                    className="absolute top-6 right-6 z-10 p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"
+                >
                     <X className="h-5 w-5 text-gray-500" />
                 </button>
 
@@ -202,92 +258,120 @@ export const FaceRegistration = ({ onSuccess, onClose }: FaceRegistrationProps) 
                             <Camera className="h-6 w-6 text-white" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-bold">Face ID Registration</h2>
-                            <p className="text-purple-100 text-sm opacity-80">Setup biometric presence</p>
+                            <h2 className="text-xl font-bold">
+                                Face ID Registration
+                            </h2>
+                            <p className="text-purple-100 text-sm opacity-80">
+                                Setup biometric presence
+                            </p>
                         </div>
                     </div>
                 </div>
 
                 <div className="p-8">
-                    <AnimatePresence mode="wait">
-                        {step === "LOADING" && (
-                            <div className="text-center py-12 space-y-6">
-                                <Loader2 className="h-12 w-12 text-purple-600 animate-spin mx-auto" />
-                                <p className="text-gray-500 font-medium">Initializing AI models...</p>
-                            </div>
-                        )}
+                    {step === "LOADING" && (
+                        <div className="text-center py-12 space-y-6">
+                            <Loader2 className="h-12 w-12 text-purple-600 animate-spin mx-auto" />
+                            <p className="text-gray-500 font-medium">
+                                Initializing AI models...
+                            </p>
+                        </div>
+                    )}
 
-                        {step === "CAMERA" && (
-                            <div className="space-y-6">
-                                <div className="relative aspect-square rounded-[2rem] overflow-hidden bg-gray-950 border-4 border-gray-100 shadow-2xl">
-                                    <video
-                                        ref={videoRef}
-                                        autoPlay
-                                        playsInline
-                                        muted
-                                        className="w-full h-full object-cover scale-x-[-1]"
+                    {step === "CAMERA" && (
+                        <div className="space-y-6">
+                            <div className="relative aspect-square rounded-[2rem] overflow-hidden bg-gray-950 border-4 border-gray-100 shadow-2xl">
+                                <video
+                                    ref={videoRef}
+                                    autoPlay
+                                    playsInline
+                                    muted
+                                    className="w-full h-full object-cover scale-x-[-1]"
+                                />
+
+                                {/* Overlay Guide */}
+                                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                    <div
+                                        className={`w-64 h-64 border-4 rounded-full transition-all duration-500 ${faceDetected ? "border-green-400 scale-105 shadow-[0_0_20px_rgba(74,222,128,0.5)]" : "border-white/20 border-dashed"}`}
                                     />
+                                </div>
 
-                                    {/* Overlay Guide */}
-                                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                                        <div className={`w-64 h-64 border-4 rounded-full transition-all duration-500 ${faceDetected ? 'border-green-400 scale-105 shadow-[0_0_20px_rgba(74,222,128,0.5)]' : 'border-white/20 border-dashed'}`} />
-                                    </div>
+                                {/* Manual Refresh Button - If Black Screen */}
+                                <button
+                                    onClick={startCamera}
+                                    className="absolute bottom-4 right-4 p-3 bg-white/10 backdrop-blur-md rounded-xl hover:bg-white/20 transition-colors text-white flex items-center gap-2 text-xs font-bold"
+                                >
+                                    <RefreshCw className="h-3 w-3" /> Re-sync
+                                </button>
 
-                                    {/* Manual Refresh Button - If Black Screen */}
-                                    <button
-                                        onClick={startCamera}
-                                        className="absolute bottom-4 right-4 p-3 bg-white/10 backdrop-blur-md rounded-xl hover:bg-white/20 transition-colors text-white flex items-center gap-2 text-xs font-bold"
+                                <div className="absolute top-4 left-1/2 -translate-x-1/2">
+                                    <div
+                                        className={`px-4 py-2 rounded-full text-[10px] font-bold tracking-widest uppercase backdrop-blur-md border ${faceDetected ? "bg-green-500/90 text-white border-green-400" : "bg-white/20 text-white border-white/20"}`}
                                     >
-                                        <RefreshCw className="h-3 w-3" /> Re-sync
-                                    </button>
-
-                                    <div className="absolute top-4 left-1/2 -translate-x-1/2">
-                                        <div className={`px-4 py-2 rounded-full text-[10px] font-bold tracking-widest uppercase backdrop-blur-md border ${faceDetected ? 'bg-green-500/90 text-white border-green-400' : 'bg-white/20 text-white border-white/20'}`}>
-                                            {faceDetected ? '✓ Face Ready' : 'Scanning...'}
-                                        </div>
+                                        {faceDetected
+                                            ? "✓ Face Ready"
+                                            : "Scanning..."}
                                     </div>
                                 </div>
-
-                                <Button onClick={captureMultipleFaces} disabled={!faceDetected} className="w-full h-14 bg-purple-600 hover:bg-purple-700 rounded-2xl font-bold shadow-lg flex items-center justify-center gap-3">
-                                    <Zap className={`h-5 w-5 ${faceDetected ? 'text-yellow-400 fill-yellow-400' : ''}`} />
-                                    Capture Presence
-                                </Button>
                             </div>
-                        )}
 
-                        {(step === "CAPTURING" || step === "PROCESSING") && (
-                            <div className="text-center py-12 space-y-6">
-                                <Loader2 className="h-16 w-16 text-purple-600 animate-spin mx-auto" />
-                                <h3 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                                    {step === "CAPTURING" ? "Securing Biometrics..." : "Finalizing Profile..."}
-                                </h3>
-                            </div>
-                        )}
+                            <Button
+                                onClick={captureMultipleFaces}
+                                disabled={!faceDetected}
+                                className="w-full h-14 bg-purple-600 hover:bg-purple-700 rounded-2xl font-bold shadow-lg flex items-center justify-center gap-3"
+                            >
+                                <Zap
+                                    className={`h-5 w-5 ${faceDetected ? "text-yellow-400 fill-yellow-400" : ""}`}
+                                />
+                                Capture Presence
+                            </Button>
+                        </div>
+                    )}
 
-                        {step === "SUCCESS" && (
-                            <div className="text-center py-12 space-y-6">
-                                <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto shadow-inner">
-                                    <CheckCircle2 className="h-10 w-10" />
-                                </div>
-                                <h3 className="text-2xl font-bold">Registration Complete!</h3>
-                                <p className="text-gray-500">Your Face ID is now active.</p>
-                            </div>
-                        )}
+                    {(step === "CAPTURING" || step === "PROCESSING") && (
+                        <div className="text-center py-12 space-y-6">
+                            <Loader2 className="h-16 w-16 text-purple-600 animate-spin mx-auto" />
+                            <h3 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                                {step === "CAPTURING"
+                                    ? "Securing Biometrics..."
+                                    : "Finalizing Profile..."}
+                            </h3>
+                        </div>
+                    )}
 
-                        {step === "ERROR" && (
-                            <div className="text-center py-8 space-y-6">
-                                <AlertCircle className="h-12 w-12 text-red-500 mx-auto" />
-                                <div className="bg-red-50 p-4 rounded-2xl border border-red-100 text-red-600 text-sm font-medium">
-                                    {error}
-                                </div>
-                                <Button onClick={() => { setError(null); setStep("LOADING"); }} className="w-full h-12 bg-gray-900 rounded-xl font-bold">
-                                    <RefreshCw className="h-4 w-4 mr-2" /> Try Again
-                                </Button>
+                    {step === "SUCCESS" && (
+                        <div className="text-center py-12 space-y-6">
+                            <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto shadow-inner">
+                                <CheckCircle2 className="h-10 w-10" />
                             </div>
-                        )}
-                    </AnimatePresence>
+                            <h3 className="text-2xl font-bold">
+                                Registration Complete!
+                            </h3>
+                            <p className="text-gray-500">
+                                Your Face ID is now active.
+                            </p>
+                        </div>
+                    )}
+
+                    {step === "ERROR" && (
+                        <div className="text-center py-8 space-y-6">
+                            <AlertCircle className="h-12 w-12 text-red-500 mx-auto" />
+                            <div className="bg-red-50 p-4 rounded-2xl border border-red-100 text-red-600 text-sm font-medium">
+                                {error}
+                            </div>
+                            <Button
+                                onClick={() => {
+                                    setError(null);
+                                    setStep("LOADING");
+                                }}
+                                className="w-full h-12 bg-gray-900 rounded-xl font-bold"
+                            >
+                                <RefreshCw className="h-4 w-4 mr-2" /> Try Again
+                            </Button>
+                        </div>
+                    )}
                 </div>
-            </motion.div>
+            </div>
             <canvas ref={canvasRef} className="hidden" />
         </div>
     );

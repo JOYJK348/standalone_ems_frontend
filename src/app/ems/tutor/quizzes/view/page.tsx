@@ -16,10 +16,9 @@ import {
     Info,
     Edit3,
     Calendar,
-    Users
+    Users,
 } from "lucide-react";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import api from "@/lib/api";
 
 interface Option {
@@ -75,7 +74,7 @@ export default function TutorQuizViewPage() {
             setLoading(true);
             const [quizRes, questionsRes] = await Promise.all([
                 api.get(`/ems/quizzes/${quizId}`),
-                api.get(`/ems/quizzes/${quizId}/questions`)
+                api.get(`/ems/quizzes/${quizId}/questions`),
             ]);
 
             if (quizRes.data.success) setQuiz(quizRes.data.data);
@@ -90,13 +89,13 @@ export default function TutorQuizViewPage() {
     const formatDateTime = (dateString?: string) => {
         if (!dateString) return "Not set";
         const date = new Date(dateString);
-        return date.toLocaleDateString('en-IN', {
-            day: '2-digit',
-            month: 'short',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true
+        return date.toLocaleDateString("en-IN", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true,
         });
     };
 
@@ -117,15 +116,26 @@ export default function TutorQuizViewPage() {
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                     <div>
                         <Link href="/ems/tutor/quizzes">
-                            <Button variant="ghost" size="sm" className="mb-2 -ml-2 text-gray-600 hover:text-blue-600">
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                className="mb-2 -ml-2 text-gray-600 hover:text-blue-600"
+                            >
                                 <ArrowLeft className="h-4 w-4 mr-2" />
                                 Back to All Quizzes
                             </Button>
                         </Link>
-                        <h1 className="text-3xl font-bold text-gray-900">{quiz?.quiz_title}</h1>
-                        <p className="text-gray-500 mt-1">{quiz?.courses?.course_name} ({quiz?.courses?.course_code})</p>
+                        <h1 className="text-3xl font-bold text-gray-900">
+                            {quiz?.quiz_title}
+                        </h1>
+                        <p className="text-gray-500 mt-1">
+                            {quiz?.courses?.course_name} (
+                            {quiz?.courses?.course_code})
+                        </p>
                         {quiz?.quiz_description && (
-                            <p className="text-sm text-gray-600 mt-2">{quiz.quiz_description}</p>
+                            <p className="text-sm text-gray-600 mt-2">
+                                {quiz.quiz_description}
+                            </p>
                         )}
                     </div>
                     <Link href={`/ems/tutor/quizzes/builder?id=${quizId}`}>
@@ -139,19 +149,54 @@ export default function TutorQuizViewPage() {
                 {/* Quick Stats Grid */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                     {[
-                        { icon: HelpCircle, label: "Questions", value: questions.length, color: "text-blue-600", bg: "bg-blue-50" },
-                        { icon: Target, label: "Total Marks", value: quiz?.total_marks, color: "text-green-600", bg: "bg-green-50" },
-                        { icon: Clock, label: "Duration", value: `${quiz?.duration_minutes}m`, color: "text-orange-600", bg: "bg-orange-50" },
-                        { icon: ClipboardCheck, label: "Pass Mark", value: quiz?.passing_marks, color: "text-purple-600", bg: "bg-purple-50" },
+                        {
+                            icon: HelpCircle,
+                            label: "Questions",
+                            value: questions.length,
+                            color: "text-blue-600",
+                            bg: "bg-blue-50",
+                        },
+                        {
+                            icon: Target,
+                            label: "Total Marks",
+                            value: quiz?.total_marks,
+                            color: "text-green-600",
+                            bg: "bg-green-50",
+                        },
+                        {
+                            icon: Clock,
+                            label: "Duration",
+                            value: `${quiz?.duration_minutes}m`,
+                            color: "text-orange-600",
+                            bg: "bg-orange-50",
+                        },
+                        {
+                            icon: ClipboardCheck,
+                            label: "Pass Mark",
+                            value: quiz?.passing_marks,
+                            color: "text-purple-600",
+                            bg: "bg-purple-50",
+                        },
                     ].map((stat, i) => (
-                        <Card key={i} className="border-0 shadow-sm overflow-hidden">
+                        <Card
+                            key={i}
+                            className="border-0 shadow-sm overflow-hidden"
+                        >
                             <CardContent className="p-4 flex items-center gap-3">
                                 <div className={`p-2 rounded-lg ${stat.bg}`}>
-                                    <stat.icon className={`h-5 w-5 ${stat.color}`} />
+                                    <stat.icon
+                                        className={`h-5 w-5 ${stat.color}`}
+                                    />
                                 </div>
                                 <div>
-                                    <p className="text-xs text-gray-500 font-medium uppercase tracking-wider">{stat.label}</p>
-                                    <p className={`text-lg font-bold ${stat.color}`}>{stat.value}</p>
+                                    <p className="text-xs text-gray-500 font-medium uppercase tracking-wider">
+                                        {stat.label}
+                                    </p>
+                                    <p
+                                        className={`text-lg font-bold ${stat.color}`}
+                                    >
+                                        {stat.value}
+                                    </p>
                                 </div>
                             </CardContent>
                         </Card>
@@ -167,16 +212,31 @@ export default function TutorQuizViewPage() {
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
-                                <p className="text-xs text-gray-500 mb-1">Start Date/Time</p>
-                                <p className="text-sm font-semibold text-gray-900">{formatDateTime(quiz?.start_datetime)}</p>
+                                <p className="text-xs text-gray-500 mb-1">
+                                    Start Date/Time
+                                </p>
+                                <p className="text-sm font-semibold text-gray-900">
+                                    {formatDateTime(quiz?.start_datetime)}
+                                </p>
                             </div>
                             <div>
-                                <p className="text-xs text-gray-500 mb-1">End Date/Time</p>
-                                <p className="text-sm font-semibold text-gray-900">{formatDateTime(quiz?.end_datetime)}</p>
+                                <p className="text-xs text-gray-500 mb-1">
+                                    End Date/Time
+                                </p>
+                                <p className="text-sm font-semibold text-gray-900">
+                                    {formatDateTime(quiz?.end_datetime)}
+                                </p>
                             </div>
                             <div>
-                                <p className="text-xs text-gray-500 mb-1">Max Attempts</p>
-                                <p className="text-sm font-semibold text-gray-900">{quiz?.max_attempts} {quiz?.max_attempts === 1 ? 'Attempt' : 'Attempts'}</p>
+                                <p className="text-xs text-gray-500 mb-1">
+                                    Max Attempts
+                                </p>
+                                <p className="text-sm font-semibold text-gray-900">
+                                    {quiz?.max_attempts}{" "}
+                                    {quiz?.max_attempts === 1
+                                        ? "Attempt"
+                                        : "Attempts"}
+                                </p>
                             </div>
                         </div>
                     </CardContent>
@@ -198,8 +258,12 @@ export default function TutorQuizViewPage() {
                         <Card className="border-dashed border-2 bg-gray-50/50">
                             <CardContent className="p-12 text-center">
                                 <ClipboardCheck className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                                <p className="text-gray-400 mb-4">No questions added to this quiz yet.</p>
-                                <Link href={`/ems/tutor/quizzes/builder?id=${quizId}`}>
+                                <p className="text-gray-400 mb-4">
+                                    No questions added to this quiz yet.
+                                </p>
+                                <Link
+                                    href={`/ems/tutor/quizzes/builder?id=${quizId}`}
+                                >
                                     <Button className="bg-blue-600 hover:bg-blue-700">
                                         <Edit3 className="h-4 w-4 mr-2" />
                                         Add Questions Now
@@ -209,12 +273,7 @@ export default function TutorQuizViewPage() {
                         </Card>
                     ) : (
                         questions.map((question, index) => (
-                            <motion.div
-                                key={question.id}
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: index * 0.05 }}
-                            >
+                            <div key={question.id}>
                                 <Card className="border-0 shadow-md hover:shadow-lg transition-shadow overflow-hidden group">
                                     <CardContent className="p-0">
                                         {/* Question Header */}
@@ -224,7 +283,10 @@ export default function TutorQuizViewPage() {
                                                     {index + 1}
                                                 </span>
                                                 <span className="text-xs font-bold text-blue-600 uppercase tracking-widest bg-blue-50 px-2 py-1 rounded">
-                                                    {question.marks} {question.marks === 1 ? 'Mark' : 'Marks'}
+                                                    {question.marks}{" "}
+                                                    {question.marks === 1
+                                                        ? "Mark"
+                                                        : "Marks"}
                                                 </span>
                                             </div>
                                             <h3 className="text-lg font-semibold text-gray-900 leading-relaxed">
@@ -235,26 +297,40 @@ export default function TutorQuizViewPage() {
                                         {/* Options Grid */}
                                         <div className="p-5 bg-gray-50/30">
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                                {question.quiz_options.map((option, optIdx) => (
-                                                    <div
-                                                        key={option.id}
-                                                        className={`flex items-center p-4 rounded-xl border-2 transition-all ${option.is_correct
-                                                            ? "border-green-500 bg-green-50/50"
-                                                            : "border-gray-100 bg-white"
+                                                {question.quiz_options.map(
+                                                    (option, optIdx) => (
+                                                        <div
+                                                            key={option.id}
+                                                            className={`flex items-center p-4 rounded-xl border-2 transition-all ${
+                                                                option.is_correct
+                                                                    ? "border-green-500 bg-green-50/50"
+                                                                    : "border-gray-100 bg-white"
                                                             }`}
-                                                    >
-                                                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center mr-3 font-bold text-sm ${option.is_correct ? "bg-green-500 text-white" : "bg-gray-100 text-gray-400"
-                                                            }`}>
-                                                            {String.fromCharCode(65 + optIdx)}
+                                                        >
+                                                            <div
+                                                                className={`w-8 h-8 rounded-lg flex items-center justify-center mr-3 font-bold text-sm ${
+                                                                    option.is_correct
+                                                                        ? "bg-green-500 text-white"
+                                                                        : "bg-gray-100 text-gray-400"
+                                                                }`}
+                                                            >
+                                                                {String.fromCharCode(
+                                                                    65 + optIdx,
+                                                                )}
+                                                            </div>
+                                                            <span
+                                                                className={`flex-1 font-medium ${option.is_correct ? "text-green-900" : "text-gray-700"}`}
+                                                            >
+                                                                {
+                                                                    option.option_text
+                                                                }
+                                                            </span>
+                                                            {option.is_correct && (
+                                                                <CheckCircle2 className="h-5 w-5 text-green-500 ml-2" />
+                                                            )}
                                                         </div>
-                                                        <span className={`flex-1 font-medium ${option.is_correct ? "text-green-900" : "text-gray-700"}`}>
-                                                            {option.option_text}
-                                                        </span>
-                                                        {option.is_correct && (
-                                                            <CheckCircle2 className="h-5 w-5 text-green-500 ml-2" />
-                                                        )}
-                                                    </div>
-                                                ))}
+                                                    ),
+                                                )}
                                             </div>
 
                                             {/* Explanation Section */}
@@ -264,9 +340,15 @@ export default function TutorQuizViewPage() {
                                                         <Info className="h-4 w-4 text-blue-500" />
                                                     </div>
                                                     <div>
-                                                        <p className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-1">Explanation</p>
+                                                        <p className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-1">
+                                                            Explanation
+                                                        </p>
                                                         <p className="text-sm text-blue-800 leading-relaxed italic">
-                                                            "{question.explanation}"
+                                                            "
+                                                            {
+                                                                question.explanation
+                                                            }
+                                                            "
                                                         </p>
                                                     </div>
                                                 </div>
@@ -274,7 +356,7 @@ export default function TutorQuizViewPage() {
                                         </div>
                                     </CardContent>
                                 </Card>
-                            </motion.div>
+                            </div>
                         ))
                     )}
 
@@ -284,8 +366,13 @@ export default function TutorQuizViewPage() {
                             <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 mb-4">
                                 <ClipboardCheck className="h-6 w-6 text-blue-600" />
                             </div>
-                            <h4 className="text-gray-900 font-bold">End of Quiz Preview</h4>
-                            <p className="text-sm text-gray-500 mt-2">To modify questions, click "Edit Questions" button above.</p>
+                            <h4 className="text-gray-900 font-bold">
+                                End of Quiz Preview
+                            </h4>
+                            <p className="text-sm text-gray-500 mt-2">
+                                To modify questions, click "Edit Questions"
+                                button above.
+                            </p>
                         </div>
                     )}
                 </div>

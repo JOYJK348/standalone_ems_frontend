@@ -20,7 +20,6 @@ import {
     AlertCircle,
 } from "lucide-react";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import api from "@/lib/api";
 import { toast } from "sonner";
 
@@ -56,14 +55,18 @@ export default function AssignmentDetailPage() {
     const fetchData = async () => {
         try {
             setLoading(true);
-            const response = await api.get(`/ems/assignments/${id}/submissions`);
+            const response = await api.get(
+                `/ems/assignments/${id}/submissions`,
+            );
             if (response.data.success) {
                 setAssignment(response.data.data.assignment);
                 setStudents(response.data.data.students || []);
             }
         } catch (error: any) {
             console.error("Error fetching assignment details:", error);
-            const msg = error.response?.data?.error?.message || "Failed to load assignment details";
+            const msg =
+                error.response?.data?.error?.message ||
+                "Failed to load assignment details";
             toast.error(msg);
         } finally {
             setLoading(false);
@@ -85,8 +88,13 @@ export default function AssignmentDetailPage() {
             <AcademicManagerLayout>
                 <div className="min-h-screen bg-gray-50 pb-24 flex flex-col items-center justify-center p-4">
                     <AlertCircle className="h-16 w-16 text-red-500 mb-4" />
-                    <h1 className="text-2xl font-bold text-gray-900">Assignment Not Found</h1>
-                    <Link href="/ems/academic-manager/assignments" className="mt-4 text-purple-600 hover:underline">
+                    <h1 className="text-2xl font-bold text-gray-900">
+                        Assignment Not Found
+                    </h1>
+                    <Link
+                        href="/ems/academic-manager/assignments"
+                        className="mt-4 text-purple-600 hover:underline"
+                    >
                         Back to Assignments
                     </Link>
                 </div>
@@ -94,7 +102,9 @@ export default function AssignmentDetailPage() {
         );
     }
 
-    const submissionCount = students.filter(s => s.status !== "NOT_SUBMITTED").length;
+    const submissionCount = students.filter(
+        (s) => s.status !== "NOT_SUBMITTED",
+    ).length;
 
     return (
         <AcademicManagerLayout>
@@ -112,23 +122,40 @@ export default function AssignmentDetailPage() {
                         <div>
                             <div className="flex items-center gap-2 mb-2">
                                 {assignment.courses?.course_code && (
-                                    <Badge variant="outline" className="text-purple-600 border-purple-200 bg-purple-50">
+                                    <Badge
+                                        variant="outline"
+                                        className="text-purple-600 border-purple-200 bg-purple-50"
+                                    >
                                         {assignment.courses.course_code}
                                     </Badge>
                                 )}
                                 {assignment.courses?.course_name && (
-                                    <Badge variant="outline" className="text-blue-600 border-blue-200 bg-blue-50">
+                                    <Badge
+                                        variant="outline"
+                                        className="text-blue-600 border-blue-200 bg-blue-50"
+                                    >
                                         {assignment.courses.course_name}
                                     </Badge>
                                 )}
                             </div>
-                            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">{assignment.assignment_title}</h1>
-                            <p className="text-gray-500 mt-2 max-w-2xl">{assignment.assignment_description}</p>
+                            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+                                {assignment.assignment_title}
+                            </h1>
+                            <p className="text-gray-500 mt-2 max-w-2xl">
+                                {assignment.assignment_description}
+                            </p>
                         </div>
                         <div className="flex items-center gap-4 text-sm text-gray-500 bg-white px-4 py-2 rounded-lg shadow-sm border border-gray-100">
                             <span className="flex items-center gap-1">
                                 <Calendar className="h-4 w-4 text-orange-500" />
-                                Deadline: {new Date(assignment.deadline).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" })}
+                                Deadline:{" "}
+                                {new Date(
+                                    assignment.deadline,
+                                ).toLocaleDateString("en-US", {
+                                    day: "numeric",
+                                    month: "short",
+                                    year: "numeric",
+                                })}
                             </span>
                             <span className="flex items-center gap-1">
                                 <Users className="h-4 w-4 text-purple-500" />
@@ -137,18 +164,17 @@ export default function AssignmentDetailPage() {
                         </div>
                     </div>
 
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100"
-                    >
+                    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                         <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-6 flex items-center gap-2">
                             <Users className="h-4 w-4 text-purple-500" />
                             Assigned Students ({students.length})
                         </h2>
                         <div className="flex flex-wrap gap-4">
-                            {students.map(student => (
-                                <div key={student.id} className="relative group">
+                            {students.map((student) => (
+                                <div
+                                    key={student.id}
+                                    className="relative group"
+                                >
                                     <div
                                         className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold text-sm transition-all duration-300 ring-2 ring-offset-2 ${
                                             student.status !== "NOT_SUBMITTED"
@@ -156,11 +182,14 @@ export default function AssignmentDetailPage() {
                                                 : "bg-gray-50 text-gray-400 ring-gray-100 hover:ring-purple-300"
                                         }`}
                                     >
-                                        {student.first_name[0]}{student.last_name[0]}
+                                        {student.first_name[0]}
+                                        {student.last_name[0]}
                                     </div>
                                     <div
                                         className={`absolute -top-1 -right-1 w-4 h-4 rounded-full border-2 border-white ${
-                                            student.status !== "NOT_SUBMITTED" ? "bg-emerald-500" : "bg-gray-300"
+                                            student.status !== "NOT_SUBMITTED"
+                                                ? "bg-emerald-500"
+                                                : "bg-gray-300"
                                         }`}
                                     />
                                     <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1 bg-gray-900 text-white text-xs rounded pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
@@ -169,7 +198,7 @@ export default function AssignmentDetailPage() {
                                 </div>
                             ))}
                         </div>
-                    </motion.div>
+                    </div>
 
                     <Card className="border-0 shadow-md overflow-hidden">
                         <div className="bg-white border-b border-gray-100 px-6 py-5">
@@ -183,42 +212,71 @@ export default function AssignmentDetailPage() {
                                 <table className="w-full text-left border-collapse">
                                     <thead className="bg-gray-50">
                                         <tr>
-                                            <th className="px-6 py-4 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-100">Student</th>
-                                            <th className="px-6 py-4 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-100">Status</th>
-                                            <th className="px-6 py-4 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-100">Submitted On</th>
-                                            <th className="px-6 py-4 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-100">Score</th>
-                                            <th className="px-6 py-4 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-100 text-right">Action</th>
+                                            <th className="px-6 py-4 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-100">
+                                                Student
+                                            </th>
+                                            <th className="px-6 py-4 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-100">
+                                                Status
+                                            </th>
+                                            <th className="px-6 py-4 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-100">
+                                                Submitted On
+                                            </th>
+                                            <th className="px-6 py-4 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-100">
+                                                Score
+                                            </th>
+                                            <th className="px-6 py-4 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-100 text-right">
+                                                Action
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-gray-50">
                                         {students.map((student, idx) => (
-                                            <motion.tr
+                                            <tr
                                                 key={student.id}
-                                                initial={{ opacity: 0, x: -10 }}
-                                                animate={{ opacity: 1, x: 0 }}
-                                                transition={{ delay: idx * 0.03 }}
                                                 className="hover:bg-purple-50/30 transition-all duration-200"
                                             >
                                                 <td className="px-6 py-4">
                                                     <div className="flex items-center gap-3">
                                                         <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center text-gray-500 font-semibold">
-                                                            {student.first_name[0]}{student.last_name[0]}
+                                                            {
+                                                                student
+                                                                    .first_name[0]
+                                                            }
+                                                            {
+                                                                student
+                                                                    .last_name[0]
+                                                            }
                                                         </div>
                                                         <div>
                                                             <p className="font-medium text-gray-900">
-                                                                {student.first_name} {student.last_name}
+                                                                {
+                                                                    student.first_name
+                                                                }{" "}
+                                                                {
+                                                                    student.last_name
+                                                                }
                                                             </p>
-                                                            <p className="text-xs text-gray-400">{student.student_code}</p>
+                                                            <p className="text-xs text-gray-400">
+                                                                {
+                                                                    student.student_code
+                                                                }
+                                                            </p>
                                                         </div>
                                                     </div>
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    {student.status === "SUBMITTED" || student.status === "GRADED" ? (
+                                                    {student.status ===
+                                                        "SUBMITTED" ||
+                                                    student.status ===
+                                                        "GRADED" ? (
                                                         <Badge className="bg-emerald-50 text-emerald-700 border-emerald-100">
                                                             {student.status}
                                                         </Badge>
                                                     ) : (
-                                                        <Badge variant="outline" className="text-gray-400 border-gray-200">
+                                                        <Badge
+                                                            variant="outline"
+                                                            className="text-gray-400 border-gray-200"
+                                                        >
                                                             Not submitted
                                                         </Badge>
                                                     )}
@@ -227,63 +285,114 @@ export default function AssignmentDetailPage() {
                                                     {student.submission ? (
                                                         <div className="flex flex-col">
                                                             <span className="text-sm font-medium text-gray-700">
-                                                                {new Date(student.submission.submitted_at).toLocaleDateString("en-US", {
-                                                                    day: "numeric", month: "short", year: "numeric",
-                                                                })}
+                                                                {new Date(
+                                                                    student
+                                                                        .submission
+                                                                        .submitted_at,
+                                                                ).toLocaleDateString(
+                                                                    "en-US",
+                                                                    {
+                                                                        day: "numeric",
+                                                                        month: "short",
+                                                                        year: "numeric",
+                                                                    },
+                                                                )}
                                                             </span>
                                                             <span className="text-xs text-gray-400">
-                                                                {new Date(student.submission.submitted_at).toLocaleTimeString("en-US", {
-                                                                    hour: "2-digit", minute: "2-digit",
-                                                                })}
+                                                                {new Date(
+                                                                    student
+                                                                        .submission
+                                                                        .submitted_at,
+                                                                ).toLocaleTimeString(
+                                                                    "en-US",
+                                                                    {
+                                                                        hour: "2-digit",
+                                                                        minute: "2-digit",
+                                                                    },
+                                                                )}
                                                             </span>
                                                         </div>
                                                     ) : (
-                                                        <span className="text-sm text-gray-300">Not submitted yet</span>
+                                                        <span className="text-sm text-gray-300">
+                                                            Not submitted yet
+                                                        </span>
                                                     )}
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    {student.submission?.marks_obtained !== undefined ? (
+                                                    {student.submission
+                                                        ?.marks_obtained !==
+                                                    undefined ? (
                                                         <div className="flex items-center gap-2">
                                                             <span className="font-semibold text-gray-900">
-                                                                {student.submission.marks_obtained}
+                                                                {
+                                                                    student
+                                                                        .submission
+                                                                        .marks_obtained
+                                                                }
                                                             </span>
-                                                            <span className="text-gray-400">/ {assignment.max_marks}</span>
+                                                            <span className="text-gray-400">
+                                                                /{" "}
+                                                                {
+                                                                    assignment.max_marks
+                                                                }
+                                                            </span>
                                                         </div>
                                                     ) : (
-                                                        <span className="text-sm text-gray-300">--</span>
+                                                        <span className="text-sm text-gray-300">
+                                                            --
+                                                        </span>
                                                     )}
                                                 </td>
                                                 <td className="px-6 py-4 text-right">
                                                     {student.submission ? (
                                                         <div className="flex items-center gap-2 justify-end">
-                                                            {student.submission.submission_url && (
+                                                            {student.submission
+                                                                .submission_url && (
                                                                 <Link
-                                                                    href={student.submission.submission_url}
+                                                                    href={
+                                                                        student
+                                                                            .submission
+                                                                            .submission_url
+                                                                    }
                                                                     target="_blank"
                                                                     rel="noopener noreferrer"
                                                                 >
-                                                                    <Button size="sm" variant="outline" className="h-8 text-xs">
+                                                                    <Button
+                                                                        size="sm"
+                                                                        variant="outline"
+                                                                        className="h-8 text-xs"
+                                                                    >
                                                                         <Eye className="h-3 w-3 mr-1" />
-                                                                        View File
+                                                                        View
+                                                                        File
                                                                     </Button>
                                                                 </Link>
                                                             )}
                                                             <Button
                                                                 size="sm"
                                                                 className="h-8 bg-purple-600 hover:bg-purple-700 text-white text-xs"
-                                                                onClick={() => setSelectedSubmission(student.submission)}
+                                                                onClick={() =>
+                                                                    setSelectedSubmission(
+                                                                        student.submission,
+                                                                    )
+                                                                }
                                                             >
                                                                 <Download className="h-3 w-3 mr-1" />
                                                                 View Answer
                                                             </Button>
                                                         </div>
                                                     ) : (
-                                                        <Button size="sm" variant="ghost" disabled className="h-8 text-xs opacity-30">
+                                                        <Button
+                                                            size="sm"
+                                                            variant="ghost"
+                                                            disabled
+                                                            className="h-8 text-xs opacity-30"
+                                                        >
                                                             No submission
                                                         </Button>
                                                     )}
                                                 </td>
-                                            </motion.tr>
+                                            </tr>
                                         ))}
                                     </tbody>
                                 </table>
@@ -292,12 +401,22 @@ export default function AssignmentDetailPage() {
                     </Card>
 
                     {selectedSubmission && (
-                        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => setSelectedSubmission(null)}>
-                            <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto p-6" onClick={e => e.stopPropagation()}>
+                        <div
+                            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+                            onClick={() => setSelectedSubmission(null)}
+                        >
+                            <div
+                                className="bg-white rounded-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto p-6"
+                                onClick={(e) => e.stopPropagation()}
+                            >
                                 <div className="flex items-center justify-between mb-6">
-                                    <h3 className="text-lg font-semibold">Submission Details</h3>
+                                    <h3 className="text-lg font-semibold">
+                                        Submission Details
+                                    </h3>
                                     <button
-                                        onClick={() => setSelectedSubmission(null)}
+                                        onClick={() =>
+                                            setSelectedSubmission(null)
+                                        }
                                         className="p-2 hover:bg-gray-100 rounded-lg"
                                     >
                                         <ArrowLeft className="h-4 w-4" />
@@ -305,17 +424,25 @@ export default function AssignmentDetailPage() {
                                 </div>
                                 {selectedSubmission.submission_url && (
                                     <div className="mb-4">
-                                        <p className="text-sm font-medium text-gray-700 mb-2">Attached File</p>
+                                        <p className="text-sm font-medium text-gray-700 mb-2">
+                                            Attached File
+                                        </p>
                                         <div className="flex items-center gap-2">
                                             <span className="text-sm text-gray-500">
-                                                {selectedSubmission.attachment_name || "Attachment"}
+                                                {selectedSubmission.attachment_name ||
+                                                    "Attachment"}
                                             </span>
                                             <Link
-                                                href={selectedSubmission.submission_url}
+                                                href={
+                                                    selectedSubmission.submission_url
+                                                }
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                             >
-                                                <Button size="sm" variant="outline">
+                                                <Button
+                                                    size="sm"
+                                                    variant="outline"
+                                                >
                                                     <Download className="h-4 w-4 mr-1" />
                                                     Download
                                                 </Button>
@@ -323,10 +450,16 @@ export default function AssignmentDetailPage() {
                                         </div>
                                     </div>
                                 )}
-                                {selectedSubmission.submission_url?.match(/\.(pdf|jpg|jpeg|png|gif)$/i) && (
+                                {selectedSubmission.submission_url?.match(
+                                    /\.(pdf|jpg|jpeg|png|gif)$/i,
+                                ) && (
                                     <div className="mt-4">
                                         <p className="text-sm font-medium text-gray-700 mb-2">
-                                            {selectedSubmission.submission_url.match(/\.pdf$/i) ? "PDF Preview" : "Document Preview"}
+                                            {selectedSubmission.submission_url.match(
+                                                /\.pdf$/i,
+                                            )
+                                                ? "PDF Preview"
+                                                : "Document Preview"}
                                         </p>
                                         <iframe
                                             src={`https://docs.google.com/gview?url=${encodeURIComponent(selectedSubmission.submission_url)}&embedded=true`}
@@ -336,7 +469,9 @@ export default function AssignmentDetailPage() {
                                 )}
                                 {selectedSubmission.submission_text && (
                                     <div className="mt-4">
-                                        <p className="text-sm font-medium text-gray-700 mb-2">Student Answer</p>
+                                        <p className="text-sm font-medium text-gray-700 mb-2">
+                                            Student Answer
+                                        </p>
                                         <p className="text-sm text-gray-600 bg-gray-50 p-4 rounded-xl whitespace-pre-wrap">
                                             {selectedSubmission.submission_text}
                                         </p>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 
 import { ArrowLeft, FileText, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -10,7 +11,11 @@ import api from "@/lib/api";
 import { toast } from "sonner";
 import { TopNavbar } from '@/components/ems/dashboard/top-navbar';
 import { BottomNav } from '@/components/ems/dashboard/bottom-nav';
-import { GSTPracticePortal } from '@/components/ems/practice/GSTPracticePortal';
+
+const GSTPracticePortal = dynamic(() => import('@/components/ems/practice/GSTPracticePortal').then(m => m.GSTPracticePortal), {
+    ssr: false,
+    loading: () => <div className="flex items-center justify-center py-20"><FileText className="h-8 w-8 text-green-600" /></div>
+});
 
 export default function GSTLabPage() {
     const router = useRouter();

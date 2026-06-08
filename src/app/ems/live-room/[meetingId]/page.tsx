@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useAuthStore } from "@/store/useAuthStore";
-import { motion, AnimatePresence } from "framer-motion";
 import {
     ScreenShare,
     Video,
@@ -15,7 +14,7 @@ import {
     Settings,
     ShieldAlert,
     AlertTriangle,
-    CheckCircle2
+    CheckCircle2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -37,7 +36,10 @@ export default function LiveRoomPage() {
     const [isModeratorWarning, setIsModeratorWarning] = useState(false);
 
     const meetingId = params.meetingId as string;
-    const isTutor = searchParams.get('role') === 'tutor' || user?.role?.name?.toLowerCase()?.includes('tutor') || user?.role?.name?.toLowerCase()?.includes('admin');
+    const isTutor =
+        searchParams.get("role") === "tutor" ||
+        user?.role?.name?.toLowerCase()?.includes("tutor") ||
+        user?.role?.name?.toLowerCase()?.includes("admin");
 
     useEffect(() => {
         if (isTutor) setIsModeratorWarning(true);
@@ -70,7 +72,7 @@ export default function LiveRoomPage() {
                     parentNode: jitsiContainerRef.current,
                     userInfo: {
                         displayName: user?.display_name || "Guest",
-                        email: user?.email || ""
+                        email: user?.email || "",
                     },
                     configOverwrite: {
                         startWithAudioMuted: false,
@@ -87,31 +89,55 @@ export default function LiveRoomPage() {
                     interfaceConfigOverwrite: {
                         SHOW_JITSI_WATERMARK: false,
                         SHOW_WATERMARK_FOR_GUESTS: false,
-                        DEFAULT_REMOTE_DISPLAY_NAME: 'Student',
+                        DEFAULT_REMOTE_DISPLAY_NAME: "Student",
                         TOOLBAR_BUTTONS: [
-                            'microphone', 'camera', 'closedcaptions', 'desktop', 'fullscreen',
-                            'fodeviceselection', 'hangup', 'profile', 'chat', 'recording',
-                            'livestreaming', 'etherpad', 'sharedvideo', 'settings', 'raisehand',
-                            'videoquality', 'filmstrip', 'invite', 'feedback', 'stats', 'shortcuts',
-                            'tileview', 'videobackgroundblur', 'download', 'help', 'mute-everyone',
-                            'security'
+                            "microphone",
+                            "camera",
+                            "closedcaptions",
+                            "desktop",
+                            "fullscreen",
+                            "fodeviceselection",
+                            "hangup",
+                            "profile",
+                            "chat",
+                            "recording",
+                            "livestreaming",
+                            "etherpad",
+                            "sharedvideo",
+                            "settings",
+                            "raisehand",
+                            "videoquality",
+                            "filmstrip",
+                            "invite",
+                            "feedback",
+                            "stats",
+                            "shortcuts",
+                            "tileview",
+                            "videobackgroundblur",
+                            "download",
+                            "help",
+                            "mute-everyone",
+                            "security",
                         ],
-                    }
+                    },
                 };
 
-                const jitsiApi = new window.JitsiMeetExternalAPI(domain, options);
+                const jitsiApi = new window.JitsiMeetExternalAPI(
+                    domain,
+                    options,
+                );
                 setApi(jitsiApi);
                 setIsLoading(false);
 
                 // Listen for events
-                jitsiApi.addEventListener('videoConferenceJoined', () => {
+                jitsiApi.addEventListener("videoConferenceJoined", () => {
                     toast.success("Joined meeting successfully");
                     if (isTutor) {
                         setIsModeratorWarning(true);
                     }
                 });
 
-                jitsiApi.addEventListener('videoConferenceLeft', () => {
+                jitsiApi.addEventListener("videoConferenceLeft", () => {
                     router.back();
                 });
             }
@@ -125,7 +151,7 @@ export default function LiveRoomPage() {
     }, [meetingId, user]);
 
     const handleLeave = () => {
-        if (api) api.executeCommand('hangup');
+        if (api) api.executeCommand("hangup");
         router.back();
     };
 
@@ -138,11 +164,13 @@ export default function LiveRoomPage() {
                         <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                             <Video className="w-5 h-5 text-white" />
                         </div>
-                        <span className="font-bold tracking-tight text-white/90">Agaran Live</span>
+                        <span className="font-bold tracking-tight text-white/90">
+                            Agaran Live
+                        </span>
                     </div>
                     <div className="h-4 w-px bg-white/10" />
                     <span className="text-sm font-medium text-white/60 truncate max-w-[200px]">
-                        {meetingId.replace(/-/g, ' ')}
+                        {meetingId.replace(/-/g, " ")}
                     </span>
                 </div>
 
@@ -150,7 +178,9 @@ export default function LiveRoomPage() {
                     {isTutor && (
                         <div className="hidden sm:flex items-center gap-2 bg-blue-500/10 border border-blue-500/20 px-3 py-1.5 rounded-full">
                             <ShieldAlert className="w-4 h-4 text-blue-400" />
-                            <span className="text-[11px] font-bold text-blue-400 uppercase tracking-wider">Moderator Mode</span>
+                            <span className="text-[11px] font-bold text-blue-400 uppercase tracking-wider">
+                                Moderator Mode
+                            </span>
                         </div>
                     )}
                     <Button
@@ -184,37 +214,37 @@ export default function LiveRoomPage() {
                 <div ref={jitsiContainerRef} className="w-full h-full" />
 
                 {/* Moderator Info Overlay (Temporary) */}
-                <AnimatePresence>
-                    {isModeratorWarning && isTutor && (
-                        <motion.div
-                            initial={{ opacity: 0, y: 50 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: 50 }}
-                            className="absolute bottom-10 left-1/2 -translate-x-1/2 z-[100] w-full max-w-md px-6"
-                        >
-                            <div className="bg-[#1a1a1a] border border-blue-500/30 rounded-2xl p-6 shadow-2xl backdrop-blur-xl">
-                                <div className="flex gap-4">
-                                    <div className="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center shrink-0">
-                                        <ShieldAlert className="w-6 h-6 text-blue-400" />
-                                    </div>
-                                    <div>
-                                        <h4 className="font-bold text-white mb-1">Claim Moderator Rights</h4>
-                                        <p className="text-xs text-white/60 leading-relaxed mb-4">
-                                            If Jitsi asks for a moderator, please click <b>"Log-in"</b> in the meeting screen to authenticate as the session owner.
-                                        </p>
-                                        <Button
-                                            size="sm"
-                                            className="w-full bg-blue-600 hover:bg-blue-700 text-xs font-bold"
-                                            onClick={() => setIsModeratorWarning(false)}
-                                        >
-                                            Got it, thanks!
-                                        </Button>
-                                    </div>
+                {isModeratorWarning && isTutor && (
+                    <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-[100] w-full max-w-md px-6">
+                        <div className="bg-[#1a1a1a] border border-blue-500/30 rounded-2xl p-6 shadow-2xl backdrop-blur-xl">
+                            <div className="flex gap-4">
+                                <div className="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center shrink-0">
+                                    <ShieldAlert className="w-6 h-6 text-blue-400" />
+                                </div>
+                                <div>
+                                    <h4 className="font-bold text-white mb-1">
+                                        Claim Moderator Rights
+                                    </h4>
+                                    <p className="text-xs text-white/60 leading-relaxed mb-4">
+                                        If Jitsi asks for a moderator, please
+                                        click <b>"Log-in"</b> in the meeting
+                                        screen to authenticate as the session
+                                        owner.
+                                    </p>
+                                    <Button
+                                        size="sm"
+                                        className="w-full bg-blue-600 hover:bg-blue-700 text-xs font-bold"
+                                        onClick={() =>
+                                            setIsModeratorWarning(false)
+                                        }
+                                    >
+                                        Got it, thanks!
+                                    </Button>
                                 </div>
                             </div>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

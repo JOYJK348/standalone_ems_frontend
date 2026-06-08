@@ -20,7 +20,6 @@ import {
     GripVertical,
 } from "lucide-react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
 import api from "@/lib/api";
 import { toast } from "sonner";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -77,17 +76,21 @@ export default function QuizBuilderPage() {
             }
 
             // Fetch questions separately
-            const questionsResponse = await api.get(`/ems/quizzes/${quizId}/questions`);
+            const questionsResponse = await api.get(
+                `/ems/quizzes/${quizId}/questions`,
+            );
             if (questionsResponse.data.success && questionsResponse.data.data) {
-                const fetchedQuestions = questionsResponse.data.data.map((q: any) => ({
-                    id: q.id,
-                    question_text: q.question_text,
-                    question_type: q.question_type,
-                    marks: q.marks,
-                    question_order: q.question_order,
-                    explanation: q.explanation || "",
-                    options: q.quiz_options || []
-                }));
+                const fetchedQuestions = questionsResponse.data.data.map(
+                    (q: any) => ({
+                        id: q.id,
+                        question_text: q.question_text,
+                        question_type: q.question_type,
+                        marks: q.marks,
+                        question_order: q.question_order,
+                        explanation: q.explanation || "",
+                        options: q.quiz_options || [],
+                    }),
+                );
                 setQuestions(fetchedQuestions);
             }
         } catch (error) {
@@ -145,7 +148,7 @@ export default function QuizBuilderPage() {
         questionIndex: number,
         optionIndex: number,
         field: string,
-        value: any
+        value: any,
     ) => {
         const updated = [...questions];
         (updated[questionIndex].options[optionIndex] as any)[field] = value;
@@ -165,7 +168,7 @@ export default function QuizBuilderPage() {
     const deleteOption = (questionIndex: number, optionIndex: number) => {
         const updated = [...questions];
         updated[questionIndex].options = updated[questionIndex].options.filter(
-            (_, i) => i !== optionIndex
+            (_, i) => i !== optionIndex,
         );
         // Reorder options
         updated[questionIndex].options.forEach((opt, i) => {
@@ -182,22 +185,34 @@ export default function QuizBuilderPage() {
 
         try {
             setSaving(true);
-            console.log(`Saving ${questions.length} questions for quiz ${quizId}`);
+            console.log(
+                `Saving ${questions.length} questions for quiz ${quizId}`,
+            );
 
             // Save all questions
-            const response = await api.post(`/ems/quizzes/${quizId}/questions`, {
-                questions,
-            });
+            const response = await api.post(
+                `/ems/quizzes/${quizId}/questions`,
+                {
+                    questions,
+                },
+            );
 
             if (response.data.success) {
-                toast.success(`Quiz saved successfully with ${questions.length} questions!`);
+                toast.success(
+                    `Quiz saved successfully with ${questions.length} questions!`,
+                );
                 router.push("/ems/academic-manager/quizzes");
             } else {
-                toast.error(response.data.message || "Failed to save questions");
+                toast.error(
+                    response.data.message || "Failed to save questions",
+                );
             }
         } catch (error: any) {
             console.error("Error saving quiz:", error);
-            const errMsg = error.response?.data?.message || error.message || "Failed to save quiz";
+            const errMsg =
+                error.response?.data?.message ||
+                error.message ||
+                "Failed to save quiz";
             toast.error(`Error: ${errMsg}`);
         } finally {
             setSaving(false);
@@ -215,81 +230,79 @@ export default function QuizBuilderPage() {
     return (
         <div className="min-h-screen bg-gray-50 pb-24">
             <AcademicManagerLayout>
-
-            <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-                {/* Header */}
-                <div className="mb-6">
-                    <Link href="/ems/academic-manager/quizzes">
-                        <Button variant="ghost" size="sm" className="mb-2">
-                            <ArrowLeft className="h-4 w-4 mr-2" />
-                            Back to Quizzes
-                        </Button>
-                    </Link>
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent">
-                                {quiz?.quiz_title}
-                            </h1>
-                            <p className="text-gray-600 mt-1">
-                                Build your quiz with multiple choice questions
-                            </p>
-                        </div>
-                        <div className="flex gap-2">
-                            <Button
-                                variant="outline"
-                                onClick={() => router.push("/ems/academic-manager/quizzes")}
-                            >
-                                <Eye className="h-4 w-4 mr-2" />
-                                Preview
+                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+                    {/* Header */}
+                    <div className="mb-6">
+                        <Link href="/ems/academic-manager/quizzes">
+                            <Button variant="ghost" size="sm" className="mb-2">
+                                <ArrowLeft className="h-4 w-4 mr-2" />
+                                Back to Quizzes
                             </Button>
-                            <Button
-                                onClick={saveQuiz}
-                                disabled={saving || questions.length === 0}
-                                className="bg-purple-600 hover:bg-purple-700"
-                            >
-                                <Save className="h-4 w-4 mr-2" />
-                                {saving ? "Saving..." : "Save Quiz"}
-                            </Button>
+                        </Link>
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent">
+                                    {quiz?.quiz_title}
+                                </h1>
+                                <p className="text-gray-600 mt-1">
+                                    Build your quiz with multiple choice
+                                    questions
+                                </p>
+                            </div>
+                            <div className="flex gap-2">
+                                <Button
+                                    variant="outline"
+                                    onClick={() =>
+                                        router.push(
+                                            "/ems/academic-manager/quizzes",
+                                        )
+                                    }
+                                >
+                                    <Eye className="h-4 w-4 mr-2" />
+                                    Preview
+                                </Button>
+                                <Button
+                                    onClick={saveQuiz}
+                                    disabled={saving || questions.length === 0}
+                                    className="bg-purple-600 hover:bg-purple-700"
+                                >
+                                    <Save className="h-4 w-4 mr-2" />
+                                    {saving ? "Saving..." : "Save Quiz"}
+                                </Button>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                {/* Quiz Info Card */}
-                <Card className="mb-6 border-0 shadow-md">
-                    <CardContent className="p-6">
-                        <div className="grid grid-cols-3 gap-4 text-sm">
-                            <div>
-                                <p className="text-gray-600">Total Marks</p>
-                                <p className="text-2xl font-bold text-purple-600">
-                                    {quiz?.total_marks}
-                                </p>
+                    {/* Quiz Info Card */}
+                    <Card className="mb-6 border-0 shadow-md">
+                        <CardContent className="p-6">
+                            <div className="grid grid-cols-3 gap-4 text-sm">
+                                <div>
+                                    <p className="text-gray-600">Total Marks</p>
+                                    <p className="text-2xl font-bold text-purple-600">
+                                        {quiz?.total_marks}
+                                    </p>
+                                </div>
+                                <div>
+                                    <p className="text-gray-600">Duration</p>
+                                    <p className="text-2xl font-bold text-purple-600">
+                                        {quiz?.duration_minutes} min
+                                    </p>
+                                </div>
+                                <div>
+                                    <p className="text-gray-600">Questions</p>
+                                    <p className="text-2xl font-bold text-purple-600">
+                                        {questions.length}
+                                    </p>
+                                </div>
                             </div>
-                            <div>
-                                <p className="text-gray-600">Duration</p>
-                                <p className="text-2xl font-bold text-purple-600">
-                                    {quiz?.duration_minutes} min
-                                </p>
-                            </div>
-                            <div>
-                                <p className="text-gray-600">Questions</p>
-                                <p className="text-2xl font-bold text-purple-600">
-                                    {questions.length}
-                                </p>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
+                        </CardContent>
+                    </Card>
 
-                {/* Questions List */}
-                <div className="space-y-6">
-                    <AnimatePresence>
+                    {/* Questions List */}
+                    <div className="space-y-6">
                         {questions.map((question, qIndex) => (
-                            <motion.div
-                                key={qIndex}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -20 }}
-                            >
+                            <div key={qIndex}>
                                 <Card className="border-0 shadow-lg">
                                     <CardContent className="p-6">
                                         {/* Question Header */}
@@ -305,12 +318,14 @@ export default function QuizBuilderPage() {
                                             <div className="flex-1">
                                                 <Textarea
                                                     placeholder="Enter your question here..."
-                                                    value={question.question_text}
+                                                    value={
+                                                        question.question_text
+                                                    }
                                                     onChange={(e) =>
                                                         updateQuestion(
                                                             qIndex,
                                                             "question_text",
-                                                            e.target.value
+                                                            e.target.value,
                                                         )
                                                     }
                                                     className="text-lg font-medium border-0 border-b-2 border-gray-200 focus:border-purple-500 rounded-none px-0 resize-none"
@@ -326,16 +341,22 @@ export default function QuizBuilderPage() {
                                                         updateQuestion(
                                                             qIndex,
                                                             "marks",
-                                                            parseInt(e.target.value)
+                                                            parseInt(
+                                                                e.target.value,
+                                                            ),
                                                         )
                                                     }
                                                     className="w-20 text-center"
                                                 />
-                                                <span className="text-sm text-gray-600">marks</span>
+                                                <span className="text-sm text-gray-600">
+                                                    marks
+                                                </span>
                                                 <Button
                                                     variant="ghost"
                                                     size="icon"
-                                                    onClick={() => deleteQuestion(qIndex)}
+                                                    onClick={() =>
+                                                        deleteQuestion(qIndex)
+                                                    }
                                                     className="text-red-600 hover:text-red-700"
                                                 >
                                                     <Trash2 className="h-4 w-4" />
@@ -345,65 +366,80 @@ export default function QuizBuilderPage() {
 
                                         {/* Options */}
                                         <div className="ml-16 space-y-3">
-                                            {question.options.map((option, oIndex) => (
-                                                <div
-                                                    key={oIndex}
-                                                    className="flex items-center gap-3 group"
-                                                >
-                                                    <button
-                                                        type="button"
-                                                        onClick={() =>
-                                                            updateOption(
-                                                                qIndex,
-                                                                oIndex,
-                                                                "is_correct",
-                                                                !option.is_correct
-                                                            )
-                                                        }
-                                                        className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${option.is_correct
-                                                            ? "bg-green-500 border-green-500"
-                                                            : "border-gray-300 hover:border-green-400"
-                                                            }`}
+                                            {question.options.map(
+                                                (option, oIndex) => (
+                                                    <div
+                                                        key={oIndex}
+                                                        className="flex items-center gap-3 group"
                                                     >
-                                                        {option.is_correct && (
-                                                            <Check className="h-4 w-4 text-white" />
-                                                        )}
-                                                    </button>
-                                                    <span className="text-gray-600 font-medium w-6">
-                                                        {String.fromCharCode(65 + oIndex)}.
-                                                    </span>
-                                                    <Input
-                                                        placeholder={`Option ${oIndex + 1}`}
-                                                        value={option.option_text}
-                                                        onChange={(e) =>
-                                                            updateOption(
-                                                                qIndex,
-                                                                oIndex,
-                                                                "option_text",
-                                                                e.target.value
-                                                            )
-                                                        }
-                                                        className="flex-1"
-                                                    />
-                                                    {question.options.length > 2 && (
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="icon"
+                                                        <button
+                                                            type="button"
                                                             onClick={() =>
-                                                                deleteOption(qIndex, oIndex)
+                                                                updateOption(
+                                                                    qIndex,
+                                                                    oIndex,
+                                                                    "is_correct",
+                                                                    !option.is_correct,
+                                                                )
                                                             }
-                                                            className="opacity-0 group-hover:opacity-100 transition-opacity"
+                                                            className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
+                                                                option.is_correct
+                                                                    ? "bg-green-500 border-green-500"
+                                                                    : "border-gray-300 hover:border-green-400"
+                                                            }`}
                                                         >
-                                                            <Trash2 className="h-4 w-4 text-gray-400" />
-                                                        </Button>
-                                                    )}
-                                                </div>
-                                            ))}
+                                                            {option.is_correct && (
+                                                                <Check className="h-4 w-4 text-white" />
+                                                            )}
+                                                        </button>
+                                                        <span className="text-gray-600 font-medium w-6">
+                                                            {String.fromCharCode(
+                                                                65 + oIndex,
+                                                            )}
+                                                            .
+                                                        </span>
+                                                        <Input
+                                                            placeholder={`Option ${oIndex + 1}`}
+                                                            value={
+                                                                option.option_text
+                                                            }
+                                                            onChange={(e) =>
+                                                                updateOption(
+                                                                    qIndex,
+                                                                    oIndex,
+                                                                    "option_text",
+                                                                    e.target
+                                                                        .value,
+                                                                )
+                                                            }
+                                                            className="flex-1"
+                                                        />
+                                                        {question.options
+                                                            .length > 2 && (
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="icon"
+                                                                onClick={() =>
+                                                                    deleteOption(
+                                                                        qIndex,
+                                                                        oIndex,
+                                                                    )
+                                                                }
+                                                                className="opacity-0 group-hover:opacity-100 transition-opacity"
+                                                            >
+                                                                <Trash2 className="h-4 w-4 text-gray-400" />
+                                                            </Button>
+                                                        )}
+                                                    </div>
+                                                ),
+                                            )}
 
                                             <Button
                                                 variant="outline"
                                                 size="sm"
-                                                onClick={() => addOption(qIndex)}
+                                                onClick={() =>
+                                                    addOption(qIndex)
+                                                }
                                                 className="ml-9"
                                             >
                                                 <Plus className="h-4 w-4 mr-2" />
@@ -418,12 +454,14 @@ export default function QuizBuilderPage() {
                                             </Label>
                                             <Textarea
                                                 placeholder="Explain the correct answer..."
-                                                value={question.explanation || ""}
+                                                value={
+                                                    question.explanation || ""
+                                                }
                                                 onChange={(e) =>
                                                     updateQuestion(
                                                         qIndex,
                                                         "explanation",
-                                                        e.target.value
+                                                        e.target.value,
                                                     )
                                                 }
                                                 className="mt-1"
@@ -432,46 +470,43 @@ export default function QuizBuilderPage() {
                                         </div>
                                     </CardContent>
                                 </Card>
-                            </motion.div>
+                            </div>
                         ))}
-                    </AnimatePresence>
 
-                    {/* Add Question Button */}
-                    <Button
-                        onClick={addQuestion}
-                        variant="outline"
-                        className="w-full h-16 border-2 border-dashed border-purple-300 hover:border-purple-500 hover:bg-purple-50"
-                    >
-                        <Plus className="h-5 w-5 mr-2" />
-                        Add Question
-                    </Button>
+                        {/* Add Question Button */}
+                        <Button
+                            onClick={addQuestion}
+                            variant="outline"
+                            className="w-full h-16 border-2 border-dashed border-purple-300 hover:border-purple-500 hover:bg-purple-50"
+                        >
+                            <Plus className="h-5 w-5 mr-2" />
+                            Add Question
+                        </Button>
+                    </div>
+
+                    {/* Empty State */}
+                    {questions.length === 0 && (
+                        <Card className="border-0 shadow-lg">
+                            <CardContent className="p-12 text-center">
+                                <ClipboardCheck className="h-20 w-20 text-purple-300 mx-auto mb-4" />
+                                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                                    No Questions Yet
+                                </h3>
+                                <p className="text-gray-600 mb-6">
+                                    Start building your quiz by adding questions
+                                </p>
+                                <Button
+                                    onClick={addQuestion}
+                                    className="bg-purple-600 hover:bg-purple-700"
+                                >
+                                    <Plus className="h-4 w-4 mr-2" />
+                                    Add First Question
+                                </Button>
+                            </CardContent>
+                        </Card>
+                    )}
                 </div>
-
-                {/* Empty State */}
-                {questions.length === 0 && (
-                    <Card className="border-0 shadow-lg">
-                        <CardContent className="p-12 text-center">
-                            <ClipboardCheck className="h-20 w-20 text-purple-300 mx-auto mb-4" />
-                            <h3 className="text-xl font-bold text-gray-900 mb-2">
-                                No Questions Yet
-                            </h3>
-                            <p className="text-gray-600 mb-6">
-                                Start building your quiz by adding questions
-                            </p>
-                            <Button
-                                onClick={addQuestion}
-                                className="bg-purple-600 hover:bg-purple-700"
-                            >
-                                <Plus className="h-4 w-4 mr-2" />
-                                Add First Question
-                            </Button>
-                        </CardContent>
-                    </Card>
-                )}
-            </div>
-
             </AcademicManagerLayout>
         </div>
     );
 }
-

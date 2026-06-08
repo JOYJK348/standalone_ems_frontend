@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 
 import { ArrowLeft, Calculator, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -10,7 +11,11 @@ import api from "@/lib/api";
 import { toast } from "sonner";
 import { TopNavbar } from '@/components/ems/dashboard/top-navbar';
 import { BottomNav } from '@/components/ems/dashboard/bottom-nav';
-import { TDSPracticePortal } from '@/components/ems/practice/TDSPracticePortal';
+
+const TDSPracticePortal = dynamic(() => import('@/components/ems/practice/TDSPracticePortal').then(m => m.TDSPracticePortal), {
+    ssr: false,
+    loading: () => <div className="flex items-center justify-center py-20"><Calculator className="h-8 w-8 text-orange-600" /></div>
+});
 
 export default function TDSLabPage() {
     const router = useRouter();

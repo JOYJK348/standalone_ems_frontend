@@ -18,7 +18,6 @@ import {
     Loader2,
 } from "lucide-react";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import api from "@/lib/api";
 import { toast } from "sonner";
 
@@ -30,9 +29,9 @@ interface Assignment {
     batch_id?: number;
     max_marks: number;
     deadline: string;
-    submission_mode: 'ONLINE' | 'OFFLINE';
+    submission_mode: "ONLINE" | "OFFLINE";
     is_active: boolean;
-    approval_status: 'PENDING' | 'APPROVED' | 'REJECTED';
+    approval_status: "PENDING" | "APPROVED" | "REJECTED";
     courses?: {
         course_name: string;
         course_code: string;
@@ -61,14 +60,18 @@ export default function TutorAssignmentsPage() {
             }
         } catch (error: any) {
             console.error("Error fetching assignments:", error);
-            toast.error(error.response?.data?.message || "Failed to load assignments");
+            toast.error(
+                error.response?.data?.message || "Failed to load assignments",
+            );
         } finally {
             setLoading(false);
         }
     };
 
     const filteredAssignments = assignments.filter((assignment) =>
-        assignment.assignment_title.toLowerCase().includes(searchQuery.toLowerCase())
+        assignment.assignment_title
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase()),
     );
 
     return (
@@ -114,7 +117,9 @@ export default function TutorAssignmentsPage() {
                 {loading ? (
                     <div className="flex items-center justify-center py-12">
                         <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
-                        <span className="ml-3 text-gray-600">Loading assignments...</span>
+                        <span className="ml-3 text-gray-600">
+                            Loading assignments...
+                        </span>
                     </div>
                 ) : filteredAssignments.length === 0 ? (
                     <Card className="border-0 shadow-lg">
@@ -137,11 +142,7 @@ export default function TutorAssignmentsPage() {
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {filteredAssignments.map((assignment) => (
-                            <motion.div
-                                key={assignment.id}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                            >
+                            <div key={assignment.id}>
                                 <Card className="border-0 shadow-lg hover:shadow-xl transition-all group">
                                     <CardHeader className="pb-3">
                                         <div className="flex items-start justify-between">
@@ -150,20 +151,30 @@ export default function TutorAssignmentsPage() {
                                             </div>
                                             <div className="flex flex-col items-end gap-1">
                                                 <span
-                                                    className={`px-3 py-1 rounded-full text-xs font-black uppercase tracking-tighter ${assignment.approval_status === 'APPROVED' ? 'bg-emerald-100 text-emerald-700' :
-                                                        assignment.approval_status === 'REJECTED' ? 'bg-rose-100 text-rose-700' :
-                                                            'bg-amber-100 text-amber-700'
-                                                        }`}
+                                                    className={`px-3 py-1 rounded-full text-xs font-black uppercase tracking-tighter ${
+                                                        assignment.approval_status ===
+                                                        "APPROVED"
+                                                            ? "bg-emerald-100 text-emerald-700"
+                                                            : assignment.approval_status ===
+                                                                "REJECTED"
+                                                              ? "bg-rose-100 text-rose-700"
+                                                              : "bg-amber-100 text-amber-700"
+                                                    }`}
                                                 >
                                                     {assignment.approval_status}
                                                 </span>
                                                 <span
-                                                    className={`px-3 py-1 rounded-full text-[10px] font-bold ${new Date(assignment.deadline) < new Date()
-                                                        ? "bg-red-50 text-red-500"
-                                                        : "bg-green-50 text-green-600"
-                                                        }`}
+                                                    className={`px-3 py-1 rounded-full text-[10px] font-bold ${
+                                                        new Date(
+                                                            assignment.deadline,
+                                                        ) < new Date()
+                                                            ? "bg-red-50 text-red-500"
+                                                            : "bg-green-50 text-green-600"
+                                                    }`}
                                                 >
-                                                    {new Date(assignment.deadline) < new Date()
+                                                    {new Date(
+                                                        assignment.deadline,
+                                                    ) < new Date()
                                                         ? "Expired"
                                                         : "Active"}
                                                 </span>
@@ -175,18 +186,30 @@ export default function TutorAssignmentsPage() {
                                         {assignment.courses && (
                                             <div className="flex border-t pt-2 mt-2 items-center justify-between">
                                                 <p className="text-xs text-blue-600 font-black px-2 py-0.5 bg-blue-50 rounded">
-                                                    {assignment.courses.course_name}
+                                                    {
+                                                        assignment.courses
+                                                            .course_name
+                                                    }
                                                 </p>
                                                 {assignment.batches && (
                                                     <p className="text-[10px] text-purple-600 font-bold px-2 py-0.5 bg-purple-50 rounded border border-purple-100">
-                                                        {assignment.batches.batch_name}
+                                                        {
+                                                            assignment.batches
+                                                                .batch_name
+                                                        }
                                                     </p>
                                                 )}
                                             </div>
                                         )}
                                         <div className="mt-2 text-[10px] flex gap-2">
-                                            <span className={`px-2 py-0.5 rounded font-black border ${assignment.submission_mode === 'ONLINE' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-amber-50 text-amber-700 border-amber-100'
-                                                }`}>
+                                            <span
+                                                className={`px-2 py-0.5 rounded font-black border ${
+                                                    assignment.submission_mode ===
+                                                    "ONLINE"
+                                                        ? "bg-emerald-50 text-emerald-700 border-emerald-100"
+                                                        : "bg-amber-50 text-amber-700 border-amber-100"
+                                                }`}
+                                            >
                                                 {assignment.submission_mode}
                                             </span>
                                         </div>
@@ -195,21 +218,41 @@ export default function TutorAssignmentsPage() {
                                         <div className="space-y-3 mb-4">
                                             <div className="flex items-center gap-2 text-sm text-gray-600">
                                                 <Calendar className="h-4 w-4 text-orange-500" />
-                                                <span>Deadline: {new Date(assignment.deadline).toLocaleDateString()}</span>
+                                                <span>
+                                                    Deadline:{" "}
+                                                    {new Date(
+                                                        assignment.deadline,
+                                                    ).toLocaleDateString()}
+                                                </span>
                                             </div>
                                             <div className="flex items-center gap-2 text-sm text-gray-600">
                                                 <Users className="h-4 w-4 text-purple-500" />
-                                                <span>{assignment.submissions_count || 0} Submissions</span>
+                                                <span>
+                                                    {assignment.submissions_count ||
+                                                        0}{" "}
+                                                    Submissions
+                                                </span>
                                             </div>
                                             <div className="flex items-center justify-between text-sm">
-                                                <span className="text-gray-500">Max Marks</span>
-                                                <span className="font-bold">{assignment.max_marks}</span>
+                                                <span className="text-gray-500">
+                                                    Max Marks
+                                                </span>
+                                                <span className="font-bold">
+                                                    {assignment.max_marks}
+                                                </span>
                                             </div>
                                         </div>
 
                                         <div className="flex gap-2">
-                                            <Link href={`/ems/tutor/assignments/${assignment.id}`} className="flex-1">
-                                                <Button size="sm" variant="outline" className="w-full">
+                                            <Link
+                                                href={`/ems/tutor/assignments/${assignment.id}`}
+                                                className="flex-1"
+                                            >
+                                                <Button
+                                                    size="sm"
+                                                    variant="outline"
+                                                    className="w-full"
+                                                >
                                                     <Eye className="h-4 w-4 mr-1" />
                                                     View
                                                 </Button>
@@ -227,7 +270,7 @@ export default function TutorAssignmentsPage() {
                                         </div>
                                     </CardContent>
                                 </Card>
-                            </motion.div>
+                            </div>
                         ))}
                     </div>
                 )}

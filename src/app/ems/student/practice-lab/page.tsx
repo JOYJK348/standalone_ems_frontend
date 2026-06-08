@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 import {
     Zap,
     ArrowRight,
@@ -13,7 +14,8 @@ import {
     Clock,
     Target,
     Sparkles,
-    BookOpen
+    BookOpen,
+    Loader2
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -21,7 +23,10 @@ import { Badge } from "@/components/ui/badge";
 import api from "@/lib/api";
 import { TopNavbar } from '@/components/ems/dashboard/top-navbar';
 import { BottomNav } from '@/components/ems/dashboard/bottom-nav';
-import { ScenarioLibrary } from '@/components/ems/practice/shared/ScenarioLibrary';
+const ScenarioLibrary = dynamic(() => import('@/components/ems/practice/shared/ScenarioLibrary').then(m => m.ScenarioLibrary), {
+    ssr: false,
+    loading: () => <div className="flex items-center justify-center py-12"><Loader2 className="h-8 w-8 animate-spin text-purple-600" /></div>
+});
 
 export default function PracticeLabPage() {
     return (

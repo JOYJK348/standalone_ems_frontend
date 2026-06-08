@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 
 import { ArrowLeft, IndianRupee, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -10,7 +11,11 @@ import api from "@/lib/api";
 import { toast } from "sonner";
 import { TopNavbar } from '@/components/ems/dashboard/top-navbar';
 import { BottomNav } from '@/components/ems/dashboard/bottom-nav';
-import { IncomeTaxPortal } from '@/components/ems/practice/IncomeTaxPortal';
+
+const IncomeTaxPortal = dynamic(() => import('@/components/ems/practice/IncomeTaxPortal').then(m => m.IncomeTaxPortal), {
+    ssr: false,
+    loading: () => <div className="flex items-center justify-center py-20"><IndianRupee className="h-8 w-8 text-blue-600" /></div>
+});
 
 export default function IncomeTaxLabPage() {
     const router = useRouter();

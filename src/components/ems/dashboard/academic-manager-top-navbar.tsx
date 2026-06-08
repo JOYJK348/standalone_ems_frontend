@@ -1,6 +1,4 @@
 "use client";
-
-import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -47,17 +45,72 @@ const menuIdMap: Record<string, string> = {
 };
 
 const allQuickActions = [
-    { label: "Dashboard", href: "/ems/academic-manager/dashboard", icon: LayoutDashboard, menuId: "ems.dashboard" },
-    { label: "Review Center", href: "/ems/academic-manager/approvals", icon: ClipboardCheck, menuId: "ems.approvals" },
-    { label: "Students", href: "/ems/academic-manager/students", icon: Users, menuId: "ems.students" },
-    { label: "Courses", href: "/ems/academic-manager/courses", icon: BookOpen, menuId: "ems.courses" },
-    { label: "Batches", href: "/ems/academic-manager/batches", icon: GraduationCap, menuId: "ems.batches" },
-    { label: "Assignments", href: "/ems/academic-manager/assignments", icon: FileText, menuId: "ems.assignments" },
-    { label: "Quizzes", href: "/ems/academic-manager/quizzes", icon: ClipboardCheck, menuId: "ems.quizzes" },
-    { label: "Live Classes", href: "/ems/academic-manager/live-classes", icon: Video, menuId: "ems.live_classes" },
-    { label: "Attendance", href: "/ems/academic-manager/attendance", icon: Calendar, menuId: "ems.attendance" },
-    { label: "Materials", href: "/ems/academic-manager/materials", icon: Folder, menuId: "ems.materials" },
-    { label: "Analytics", href: "/ems/academic-manager/analytics", icon: TrendingUp, menuId: "ems.analytics" },
+    {
+        label: "Dashboard",
+        href: "/ems/academic-manager/dashboard",
+        icon: LayoutDashboard,
+        menuId: "ems.dashboard",
+    },
+    {
+        label: "Review Center",
+        href: "/ems/academic-manager/approvals",
+        icon: ClipboardCheck,
+        menuId: "ems.approvals",
+    },
+    {
+        label: "Students",
+        href: "/ems/academic-manager/students",
+        icon: Users,
+        menuId: "ems.students",
+    },
+    {
+        label: "Courses",
+        href: "/ems/academic-manager/courses",
+        icon: BookOpen,
+        menuId: "ems.courses",
+    },
+    {
+        label: "Batches",
+        href: "/ems/academic-manager/batches",
+        icon: GraduationCap,
+        menuId: "ems.batches",
+    },
+    {
+        label: "Assignments",
+        href: "/ems/academic-manager/assignments",
+        icon: FileText,
+        menuId: "ems.assignments",
+    },
+    {
+        label: "Quizzes",
+        href: "/ems/academic-manager/quizzes",
+        icon: ClipboardCheck,
+        menuId: "ems.quizzes",
+    },
+    {
+        label: "Live Classes",
+        href: "/ems/academic-manager/live-classes",
+        icon: Video,
+        menuId: "ems.live_classes",
+    },
+    {
+        label: "Attendance",
+        href: "/ems/academic-manager/attendance",
+        icon: Calendar,
+        menuId: "ems.attendance",
+    },
+    {
+        label: "Materials",
+        href: "/ems/academic-manager/materials",
+        icon: Folder,
+        menuId: "ems.materials",
+    },
+    {
+        label: "Analytics",
+        href: "/ems/academic-manager/analytics",
+        icon: TrendingUp,
+        menuId: "ems.analytics",
+    },
 ];
 
 export function AcademicManagerTopNavbar() {
@@ -70,19 +123,22 @@ export function AcademicManagerTopNavbar() {
     const profileMenuRef = useRef<HTMLDivElement>(null);
     const notificationRef = useRef<HTMLDivElement>(null);
 
-    const quickActions = userMenuIds.length === 0
-        ? allQuickActions
-        : allQuickActions.filter(a => userMenuIds.includes(a.menuId));
+    const quickActions =
+        userMenuIds.length === 0
+            ? allQuickActions
+            : allQuickActions.filter((a) => userMenuIds.includes(a.menuId));
 
     useEffect(() => {
         const token = Cookie.get("access_token");
         if (token) {
-            const baseUrl = process.env.NEXT_PUBLIC_API_URL || '';
+            const baseUrl = process.env.NEXT_PUBLIC_API_URL || "";
             fetch(`${baseUrl}/ems/my-menus`, {
-                headers: { Authorization: `Bearer ${token}` }
+                headers: { Authorization: `Bearer ${token}` },
             })
-                .then(r => r.json())
-                .then(data => { if (data.success) setUserMenuIds(data.data.menuIds || []); })
+                .then((r) => r.json())
+                .then((data) => {
+                    if (data.success) setUserMenuIds(data.data.menuIds || []);
+                })
                 .catch(() => {});
         }
 
@@ -92,7 +148,10 @@ export function AcademicManagerTopNavbar() {
         }, 30000);
 
         function handleClickOutside(event: MouseEvent) {
-            if (profileMenuRef.current && !profileMenuRef.current.contains(event.target as Node)) {
+            if (
+                profileMenuRef.current &&
+                !profileMenuRef.current.contains(event.target as Node)
+            ) {
                 setShowProfileMenu(false);
             }
         }
@@ -109,7 +168,10 @@ export function AcademicManagerTopNavbar() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16">
                     {/* Logo */}
-                    <Link href="/ems/academic-manager/dashboard" className="flex items-center gap-2 group">
+                    <Link
+                        href="/ems/academic-manager/dashboard"
+                        className="flex items-center gap-2 group"
+                    >
                         <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-600 to-purple-700 flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow">
                             <GraduationCap className="h-5 w-5 text-white" />
                         </div>
@@ -152,7 +214,8 @@ export function AcademicManagerTopNavbar() {
                                 className="h-9 w-9 relative"
                                 onClick={() => {
                                     setShowNotifications(!showNotifications);
-                                    if (!showNotifications) fetchNotifications();
+                                    if (!showNotifications)
+                                        fetchNotifications();
                                 }}
                             >
                                 <Bell className="h-5 w-5 text-gray-600" />
@@ -161,13 +224,15 @@ export function AcademicManagerTopNavbar() {
                                 )}
                             </Button>
 
-                            <AnimatePresence>
-                                {showNotifications && (
-                                    <div className="absolute right-0 mt-2">
-                                        <NotificationPanel onClose={() => setShowNotifications(false)} />
-                                    </div>
-                                )}
-                            </AnimatePresence>
+                            {showNotifications && (
+                                <div className="absolute right-0 mt-2">
+                                    <NotificationPanel
+                                        onClose={() =>
+                                            setShowNotifications(false)
+                                        }
+                                    />
+                                </div>
+                            )}
                         </div>
 
                         {/* Profile Menu */}
@@ -176,100 +241,106 @@ export function AcademicManagerTopNavbar() {
                                 variant="ghost"
                                 size="icon"
                                 className="h-9 w-9"
-                                onClick={() => setShowProfileMenu(!showProfileMenu)}
+                                onClick={() =>
+                                    setShowProfileMenu(!showProfileMenu)
+                                }
                             >
                                 <div className="w-7 h-7 rounded-full bg-gradient-to-br from-purple-600 to-purple-700 flex items-center justify-center shadow-sm">
                                     <User className="h-4 w-4 text-white" />
                                 </div>
                             </Button>
 
-                            <AnimatePresence>
-                                {showProfileMenu && (
-                                    <motion.div
-                                        initial={{ opacity: 0, y: -10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: -10 }}
-                                        className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50"
-                                    >
-                                        {/* User Info */}
-                                        <div className="px-4 py-3 border-b border-gray-200">
-                                            <p className="text-sm font-semibold text-gray-900">Academic Manager</p>
-                                            <p className="text-xs text-gray-500 truncate">manager@Agaran.com</p>
-                                        </div>
+                            {showProfileMenu && (
+                                <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50">
+                                    {/* User Info */}
+                                    <div className="px-4 py-3 border-b border-gray-200">
+                                        <p className="text-sm font-semibold text-gray-900">
+                                            Academic Manager
+                                        </p>
+                                        <p className="text-xs text-gray-500 truncate">
+                                            manager@Agaran.com
+                                        </p>
+                                    </div>
 
-                                        {/* Quick Actions */}
-                                        <div className="py-2">
-                                            <div className="px-3 py-1.5">
-                                                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Quick Actions</p>
-                                            </div>
-                                            {quickActions.map((action) => {
-                                                const Icon = action.icon;
-                                                return (
-                                                    <Link
-                                                        key={action.href}
-                                                        href={action.href}
-                                                        onClick={() => setShowProfileMenu(false)}
-                                                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-700 transition-colors group"
-                                                    >
-                                                        <Icon className="h-4 w-4 text-gray-400 group-hover:text-purple-600" />
-                                                        <span className="font-medium">{action.label}</span>
-                                                    </Link>
-                                                );
-                                            })}
+                                    {/* Quick Actions */}
+                                    <div className="py-2">
+                                        <div className="px-3 py-1.5">
+                                            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                                Quick Actions
+                                            </p>
                                         </div>
+                                        {quickActions.map((action) => {
+                                            const Icon = action.icon;
+                                            return (
+                                                <Link
+                                                    key={action.href}
+                                                    href={action.href}
+                                                    onClick={() =>
+                                                        setShowProfileMenu(
+                                                            false,
+                                                        )
+                                                    }
+                                                    className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-700 transition-colors group"
+                                                >
+                                                    <Icon className="h-4 w-4 text-gray-400 group-hover:text-purple-600" />
+                                                    <span className="font-medium">
+                                                        {action.label}
+                                                    </span>
+                                                </Link>
+                                            );
+                                        })}
+                                    </div>
 
-                                        {/* Settings Link */}
-                                        <div className="border-t border-gray-200 py-1">
-                                            <Link
-                                                href="/ems/academic-manager/settings"
-                                                onClick={() => setShowProfileMenu(false)}
-                                                className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                                            >
-                                                <Settings className="h-4 w-4 text-gray-400" />
-                                                <span className="font-medium">Settings</span>
-                                            </Link>
-                                        </div>
+                                    {/* Settings Link */}
+                                    <div className="border-t border-gray-200 py-1">
+                                        <Link
+                                            href="/ems/academic-manager/settings"
+                                            onClick={() =>
+                                                setShowProfileMenu(false)
+                                            }
+                                            className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                                        >
+                                            <Settings className="h-4 w-4 text-gray-400" />
+                                            <span className="font-medium">
+                                                Settings
+                                            </span>
+                                        </Link>
+                                    </div>
 
-                                        {/* Logout */}
-                                        <div className="border-t border-gray-200 py-1">
-                                            <Link
-                                                href="/login"
-                                                onClick={() => setShowProfileMenu(false)}
-                                                className="flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
-                                            >
-                                                <LogOut className="h-4 w-4" />
-                                                <span className="font-medium">Logout</span>
-                                            </Link>
-                                        </div>
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
+                                    {/* Logout */}
+                                    <div className="border-t border-gray-200 py-1">
+                                        <Link
+                                            href="/login"
+                                            onClick={() =>
+                                                setShowProfileMenu(false)
+                                            }
+                                            className="flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                                        >
+                                            <LogOut className="h-4 w-4" />
+                                            <span className="font-medium">
+                                                Logout
+                                            </span>
+                                        </Link>
+                                    </div>
+                                </div>
+                            )}
                         </div>
-
                     </div>
                 </div>
 
                 {/* Mobile Search Bar */}
-                <AnimatePresence>
-                    {showSearch && (
-                        <motion.div
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: "auto", opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            className="md:hidden pb-3 border-t border-gray-200"
-                        >
-                            <div className="relative pt-3">
-                                <Search className="absolute left-3 top-6 h-4 w-4 text-gray-400" />
-                                <Input
-                                    type="search"
-                                    placeholder="Search students, courses, batches..."
-                                    className="w-full h-9 pl-9 text-sm"
-                                />
-                            </div>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
-
+                {showSearch && (
+                    <div className="md:hidden pb-3 border-t border-gray-200">
+                        <div className="relative pt-3">
+                            <Search className="absolute left-3 top-6 h-4 w-4 text-gray-400" />
+                            <Input
+                                type="search"
+                                placeholder="Search students, courses, batches..."
+                                className="w-full h-9 pl-9 text-sm"
+                            />
+                        </div>
+                    </div>
+                )}
             </div>
         </nav>
     );

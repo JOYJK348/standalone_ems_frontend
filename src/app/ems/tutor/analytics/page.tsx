@@ -11,14 +11,36 @@ import {
     Star,
     Award,
 } from "lucide-react";
-import { motion } from "framer-motion";
-
 export default function TutorAnalyticsPage() {
     const stats = [
-        { label: "Course Rating", value: "4.8/5", icon: Star, color: "text-yellow-500", bg: "bg-yellow-50" },
-        { label: "Student Passing Rate", value: "94%", icon: Award, color: "text-green-500", bg: "bg-green-50" },
-        { label: "Avg. Assignment Marks", value: "82/100", icon: TrendingUp, color: "text-blue-500", bg: "bg-blue-50" },
-        { label: "Active Students", value: "320+", icon: Users, color: "text-purple-500", bg: "bg-purple-50" },
+        {
+            label: "Course Rating",
+            value: "4.8/5",
+            icon: Star,
+            color: "text-yellow-500",
+            bg: "bg-yellow-50",
+        },
+        {
+            label: "Student Passing Rate",
+            value: "94%",
+            icon: Award,
+            color: "text-green-500",
+            bg: "bg-green-50",
+        },
+        {
+            label: "Avg. Assignment Marks",
+            value: "82/100",
+            icon: TrendingUp,
+            color: "text-blue-500",
+            bg: "bg-blue-50",
+        },
+        {
+            label: "Active Students",
+            value: "320+",
+            icon: Users,
+            color: "text-purple-500",
+            bg: "bg-purple-50",
+        },
     ];
 
     return (
@@ -30,28 +52,33 @@ export default function TutorAnalyticsPage() {
                     <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
                         Performance Analytics
                     </h1>
-                    <p className="text-gray-600 mt-1">Insights into your teaching impact and student progress</p>
+                    <p className="text-gray-600 mt-1">
+                        Insights into your teaching impact and student progress
+                    </p>
                 </div>
 
                 {/* Stats Grid */}
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                     {stats.map((stat, index) => (
-                        <motion.div
-                            key={index}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: index * 0.1 }}
-                        >
+                        <div key={index}>
                             <Card className="border-0 shadow-md">
                                 <CardContent className="p-6">
-                                    <div className={`w-10 h-10 rounded-lg ${stat.bg} flex items-center justify-center mb-4`}>
-                                        <stat.icon className={`h-5 w-5 ${stat.color}`} />
+                                    <div
+                                        className={`w-10 h-10 rounded-lg ${stat.bg} flex items-center justify-center mb-4`}
+                                    >
+                                        <stat.icon
+                                            className={`h-5 w-5 ${stat.color}`}
+                                        />
                                     </div>
-                                    <p className="text-sm text-gray-500 font-medium">{stat.label}</p>
-                                    <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+                                    <p className="text-sm text-gray-500 font-medium">
+                                        {stat.label}
+                                    </p>
+                                    <p className="text-2xl font-bold text-gray-900">
+                                        {stat.value}
+                                    </p>
                                 </CardContent>
                             </Card>
-                        </motion.div>
+                        </div>
                     ))}
                 </div>
 

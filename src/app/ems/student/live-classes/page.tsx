@@ -17,15 +17,23 @@ import {
     FileText,
     Download,
     ExternalLink,
-    RefreshCw
+    RefreshCw,
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 import api from "@/lib/api";
-import { format, differenceInSeconds, isWithinInterval, addMinutes, subMinutes } from "date-fns";
+import {
+    format,
+    differenceInSeconds,
+    isWithinInterval,
+    addMinutes,
+    subMinutes,
+} from "date-fns";
 import dynamic from "next/dynamic";
 const AttendanceVerification = dynamic(
-    () => import("@/components/ems/attendance/AttendanceVerification").then(mod => mod.AttendanceVerification),
-    { ssr: false }
+    () =>
+        import("@/components/ems/attendance/AttendanceVerification").then(
+            (mod) => mod.AttendanceVerification,
+        ),
+    { ssr: false },
 );
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -56,7 +64,10 @@ export default function StudentLiveClasses() {
     const [classes, setClasses] = useState<LiveClass[]>([]);
     const [loading, setLoading] = useState(true);
     const [currentTime, setCurrentTime] = useState(new Date());
-    const [activeVerification, setActiveVerification] = useState<{ id: number; type: 'IN' | 'OUT' } | null>(null);
+    const [activeVerification, setActiveVerification] = useState<{
+        id: number;
+        type: "IN" | "OUT";
+    } | null>(null);
     const router = useRouter();
 
     useEffect(() => {
@@ -88,20 +99,22 @@ export default function StudentLiveClasses() {
         const checkInEnd = addMinutes(startTime, 5);
         const checkOutStart = subMinutes(endTime, 5);
 
-        const isInCheckInWindow = currentTime >= startTime && currentTime <= checkInEnd;
-        const isInCheckOutWindow = currentTime >= checkOutStart && currentTime <= endTime;
+        const isInCheckInWindow =
+            currentTime >= startTime && currentTime <= checkInEnd;
+        const isInCheckOutWindow =
+            currentTime >= checkOutStart && currentTime <= endTime;
 
         return {
             isInCheckInWindow,
             isInCheckOutWindow,
             isLive: currentTime >= startTime && currentTime <= endTime,
             checkInEnd,
-            checkOutStart
+            checkOutStart,
         };
     };
 
     const joinMeeting = (liveClass: LiveClass) => {
-        if (liveClass.meeting_platform === 'JITSI') {
+        if (liveClass.meeting_platform === "JITSI") {
             router.push(`/ems/live-room/${liveClass.meeting_id}?role=student`);
         }
     };
@@ -125,7 +138,7 @@ export default function StudentLiveClasses() {
 
             <div className="max-w-5xl mx-auto px-6 py-8">
                 {activeVerification ? (
-                    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+                    <div>
                         <Button
                             variant="ghost"
                             onClick={() => setActiveVerification(null)}
@@ -134,18 +147,25 @@ export default function StudentLiveClasses() {
                             ← Back to list
                         </Button>
                         <AttendanceVerification
-                            sessions={[{
-                                id: activeVerification.id,
-                                course: { course_name: classes.find(c => c.id === activeVerification.id)?.class_title },
-                                verification_type: activeVerification.type
-                            }]}
+                            sessions={[
+                                {
+                                    id: activeVerification.id,
+                                    course: {
+                                        course_name: classes.find(
+                                            (c) =>
+                                                c.id === activeVerification.id,
+                                        )?.class_title,
+                                    },
+                                    verification_type: activeVerification.type,
+                                },
+                            ]}
                             onSuccess={() => {
                                 setActiveVerification(null);
                                 fetchStudentClasses();
                             }}
                             onClose={() => setActiveVerification(null)}
                         />
-                    </motion.div>
+                    </div>
                 ) : (
                     <div className="space-y-6">
                         {loading ? (
@@ -161,7 +181,7 @@ export default function StudentLiveClasses() {
                             classes.map((c) => {
                                 const info = getStatusInfo(c);
                                 return (
-                                    <motion.div key={c.id} layout>
+                                    <div key={c.id}>
                                         <Card className="border-0 shadow-xl shadow-gray-200/50 rounded-[2.5rem] overflow-hidden bg-white mb-6">
                                             <CardContent className="p-0">
                                                 <div className="grid grid-cols-1 lg:grid-cols-12">
@@ -169,59 +189,100 @@ export default function StudentLiveClasses() {
                                                     <div className="lg:col-span-8 p-10">
                                                         <div className="flex items-center gap-3 mb-6">
                                                             <div className="px-3 py-1 bg-purple-100 text-purple-700 rounded-lg text-xs font-black uppercase tracking-widest">
-                                                                {c.courses.course_code}
+                                                                {
+                                                                    c.courses
+                                                                        .course_code
+                                                                }
                                                             </div>
                                                             {info.isLive && (
                                                                 <div className="flex items-center gap-2 bg-red-100 px-3 py-1 rounded-lg">
                                                                     <div className="h-2 w-2 bg-red-600 rounded-full animate-ping" />
-                                                                    <span className="text-red-600 text-[10px] font-black uppercase">LIVE NOW</span>
+                                                                    <span className="text-red-600 text-[10px] font-black uppercase">
+                                                                        LIVE NOW
+                                                                    </span>
                                                                 </div>
                                                             )}
                                                         </div>
 
-                                                        <h2 className="text-3xl font-black text-gray-900 mb-3 leading-tight">{c.class_title}</h2>
+                                                        <h2 className="text-3xl font-black text-gray-900 mb-3 leading-tight">
+                                                            {c.class_title}
+                                                        </h2>
                                                         <p className="text-gray-500 font-medium line-clamp-2 mb-8">
-                                                            {c.courses.course_name} • Professional EMS Training Session
+                                                            {
+                                                                c.courses
+                                                                    .course_name
+                                                            }{" "}
+                                                            • Professional EMS
+                                                            Training Session
                                                         </p>
 
                                                         <div className="flex flex-wrap gap-6 text-sm font-bold text-gray-400">
                                                             <div className="flex items-center gap-2">
                                                                 <Calendar className="h-4 w-4" />
-                                                                {format(new Date(c.scheduled_date), "MMM do, yyyy")}
+                                                                {format(
+                                                                    new Date(
+                                                                        c.scheduled_date,
+                                                                    ),
+                                                                    "MMM do, yyyy",
+                                                                )}
                                                             </div>
                                                             <div className="flex items-center gap-2">
                                                                 <Clock className="h-4 w-4" />
-                                                                {c.start_time} - {c.end_time}
+                                                                {c.start_time} -{" "}
+                                                                {c.end_time}
                                                             </div>
                                                         </div>
 
                                                         {/* Integrated Class Materials */}
-                                                        {c.lessons?.materials && c.lessons.materials.length > 0 && (
-                                                            <div className="mt-8 pt-8 border-t border-gray-100">
-                                                                <h4 className="text-[10px] font-black uppercase text-gray-400 tracking-widest mb-4 flex items-center gap-2">
-                                                                    <FileText className="h-3 w-3" />
-                                                                    Related Study Materials
-                                                                </h4>
-                                                                <div className="flex flex-wrap gap-3">
-                                                                    {c.lessons.materials.map(mat => (
-                                                                        <button
-                                                                            key={mat.id}
-                                                                            onClick={() => window.open(mat.file_url, '_blank')}
-                                                                            className="flex items-center gap-3 bg-gray-50 hover:bg-white hover:shadow-md border border-gray-100 px-4 py-2.5 rounded-xl transition-all group"
-                                                                        >
-                                                                            <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                                                                                <FileText className="h-4 w-4" />
-                                                                            </div>
-                                                                            <div className="text-left">
-                                                                                <p className="text-xs font-bold text-gray-800 line-clamp-1">{mat.material_name}</p>
-                                                                                <p className="text-[10px] text-gray-400 font-medium uppercase">{mat.material_type}</p>
-                                                                            </div>
-                                                                            <Download className="h-3 w-3 text-gray-300 group-hover:text-blue-600 ml-2" />
-                                                                        </button>
-                                                                    ))}
+                                                        {c.lessons?.materials &&
+                                                            c.lessons.materials
+                                                                .length > 0 && (
+                                                                <div className="mt-8 pt-8 border-t border-gray-100">
+                                                                    <h4 className="text-[10px] font-black uppercase text-gray-400 tracking-widest mb-4 flex items-center gap-2">
+                                                                        <FileText className="h-3 w-3" />
+                                                                        Related
+                                                                        Study
+                                                                        Materials
+                                                                    </h4>
+                                                                    <div className="flex flex-wrap gap-3">
+                                                                        {c.lessons.materials.map(
+                                                                            (
+                                                                                mat,
+                                                                            ) => (
+                                                                                <button
+                                                                                    key={
+                                                                                        mat.id
+                                                                                    }
+                                                                                    onClick={() =>
+                                                                                        window.open(
+                                                                                            mat.file_url,
+                                                                                            "_blank",
+                                                                                        )
+                                                                                    }
+                                                                                    className="flex items-center gap-3 bg-gray-50 hover:bg-white hover:shadow-md border border-gray-100 px-4 py-2.5 rounded-xl transition-all group"
+                                                                                >
+                                                                                    <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                                                                                        <FileText className="h-4 w-4" />
+                                                                                    </div>
+                                                                                    <div className="text-left">
+                                                                                        <p className="text-xs font-bold text-gray-800 line-clamp-1">
+                                                                                            {
+                                                                                                mat.material_name
+                                                                                            }
+                                                                                        </p>
+                                                                                        <p className="text-[10px] text-gray-400 font-medium uppercase">
+                                                                                            {
+                                                                                                mat.material_type
+                                                                                            }
+                                                                                        </p>
+                                                                                    </div>
+                                                                                    <Download className="h-3 w-3 text-gray-300 group-hover:text-blue-600 ml-2" />
+                                                                                </button>
+                                                                            ),
+                                                                        )}
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                        )}
+                                                            )}
                                                     </div>
 
                                                     {/* Right Section - Verification Status */}
@@ -229,33 +290,71 @@ export default function StudentLiveClasses() {
                                                         <div className="space-y-4">
                                                             {/* Check-In Action */}
                                                             <div className="space-y-2">
-                                                                <p className="text-[10px] font-black uppercase text-gray-500 tracking-widest px-1">Entry Check-In</p>
+                                                                <p className="text-[10px] font-black uppercase text-gray-500 tracking-widest px-1">
+                                                                    Entry
+                                                                    Check-In
+                                                                </p>
                                                                 <Button
-                                                                    className={`w-full h-14 rounded-2xl font-black transition-all ${info.isInCheckInWindow
-                                                                        ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-xl shadow-purple-200'
-                                                                        : 'bg-white text-gray-400 border-2 border-gray-100'
-                                                                        }`}
-                                                                    disabled={!info.isInCheckInWindow}
-                                                                    onClick={() => setActiveVerification({ id: c.id, type: 'IN' })}
+                                                                    className={`w-full h-14 rounded-2xl font-black transition-all ${
+                                                                        info.isInCheckInWindow
+                                                                            ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-xl shadow-purple-200"
+                                                                            : "bg-white text-gray-400 border-2 border-gray-100"
+                                                                    }`}
+                                                                    disabled={
+                                                                        !info.isInCheckInWindow
+                                                                    }
+                                                                    onClick={() =>
+                                                                        setActiveVerification(
+                                                                            {
+                                                                                id: c.id,
+                                                                                type: "IN",
+                                                                            },
+                                                                        )
+                                                                    }
                                                                 >
-                                                                    {info.isInCheckInWindow ? <Unlock className="mr-2 h-5 w-5" /> : <Lock className="mr-2 h-5 w-5 opacity-50" />}
-                                                                    {info.isInCheckInWindow ? "CHECK-IN NOW" : "CHECK-IN LOCKED"}
+                                                                    {info.isInCheckInWindow ? (
+                                                                        <Unlock className="mr-2 h-5 w-5" />
+                                                                    ) : (
+                                                                        <Lock className="mr-2 h-5 w-5 opacity-50" />
+                                                                    )}
+                                                                    {info.isInCheckInWindow
+                                                                        ? "CHECK-IN NOW"
+                                                                        : "CHECK-IN LOCKED"}
                                                                 </Button>
                                                             </div>
 
                                                             {/* Check-Out Action */}
                                                             <div className="space-y-2">
-                                                                <p className="text-[10px] font-black uppercase text-gray-500 tracking-widest px-1">Exit Check-Out</p>
+                                                                <p className="text-[10px] font-black uppercase text-gray-500 tracking-widest px-1">
+                                                                    Exit
+                                                                    Check-Out
+                                                                </p>
                                                                 <Button
-                                                                    className={`w-full h-14 rounded-2xl font-black transition-all ${info.isInCheckOutWindow
-                                                                        ? 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-xl shadow-blue-200'
-                                                                        : 'bg-white text-gray-400 border-2 border-gray-100'
-                                                                        }`}
-                                                                    disabled={!info.isInCheckOutWindow}
-                                                                    onClick={() => setActiveVerification({ id: c.id, type: 'OUT' })}
+                                                                    className={`w-full h-14 rounded-2xl font-black transition-all ${
+                                                                        info.isInCheckOutWindow
+                                                                            ? "bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-xl shadow-blue-200"
+                                                                            : "bg-white text-gray-400 border-2 border-gray-100"
+                                                                    }`}
+                                                                    disabled={
+                                                                        !info.isInCheckOutWindow
+                                                                    }
+                                                                    onClick={() =>
+                                                                        setActiveVerification(
+                                                                            {
+                                                                                id: c.id,
+                                                                                type: "OUT",
+                                                                            },
+                                                                        )
+                                                                    }
                                                                 >
-                                                                    {info.isInCheckOutWindow ? <Unlock className="mr-2 h-5 w-5" /> : <Lock className="mr-2 h-5 w-5 opacity-50" />}
-                                                                    {info.isInCheckOutWindow ? "CHECK-OUT NOW" : "CHECK-OUT LOCKED"}
+                                                                    {info.isInCheckOutWindow ? (
+                                                                        <Unlock className="mr-2 h-5 w-5" />
+                                                                    ) : (
+                                                                        <Lock className="mr-2 h-5 w-5 opacity-50" />
+                                                                    )}
+                                                                    {info.isInCheckOutWindow
+                                                                        ? "CHECK-OUT NOW"
+                                                                        : "CHECK-OUT LOCKED"}
                                                                 </Button>
                                                             </div>
 
@@ -263,7 +362,11 @@ export default function StudentLiveClasses() {
                                                             <Button
                                                                 variant="outline"
                                                                 className="w-full h-14 rounded-2xl font-black border-2 border-purple-200 text-purple-600 hover:bg-purple-50 mt-2"
-                                                                onClick={() => joinMeeting(c)}
+                                                                onClick={() =>
+                                                                    joinMeeting(
+                                                                        c,
+                                                                    )
+                                                                }
                                                             >
                                                                 <VideoIcon className="mr-2 h-5 w-5" />
                                                                 GO TO CLASS
@@ -273,7 +376,7 @@ export default function StudentLiveClasses() {
                                                 </div>
                                             </CardContent>
                                         </Card>
-                                    </motion.div>
+                                    </div>
                                 );
                             })
                         )}
@@ -283,5 +386,3 @@ export default function StudentLiveClasses() {
         </div>
     );
 }
-
-
